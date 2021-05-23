@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -15,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 public class ProgressDialog extends JDialog implements PropertyChangeListener {
@@ -57,7 +55,7 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 		firstBar = new JProgressBar(SwingConstants.HORIZONTAL);
 		firstPanel.add(firstBar, BorderLayout.SOUTH);
 		firstBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		firstBar.setIndeterminate(true);
+		firstBar.setStringPainted(true);
 
 		JPanel secondPanel = new JPanel();
 		GridBagConstraints gbc_secondPanel = new GridBagConstraints();
@@ -74,7 +72,7 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 		secondPanel.add(secondLabel, BorderLayout.NORTH);
 
 		secondBar = new JProgressBar(SwingConstants.HORIZONTAL);
-		secondBar.setIndeterminate(true);
+		secondBar.setStringPainted(true);
 		secondBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		secondPanel.add(secondBar, BorderLayout.SOUTH);
 		setLocationRelativeTo(null);
@@ -89,61 +87,21 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 	}
 
 	public void setFirstBarSize(int maxSize) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-
-				@Override
-				public void run() {
-					firstBar.setValue(0);
-					firstBar.setMaximum(maxSize);
-				}
-			});
-		} catch (InvocationTargetException | InterruptedException e) {
-
-		}
+		firstBar.setValue(0);
+		firstBar.setMaximum(maxSize);
 	}
 
 	public void setSecondBarSize(int maxSize) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-
-				@Override
-				public void run() {
-					secondBar.setValue(0);
-					secondBar.setMaximum(maxSize);
-				}
-			});
-		} catch (InvocationTargetException | InterruptedException e) {
-
-		}
+		secondBar.setValue(0);
+		secondBar.setMaximum(maxSize);
 	}
 
 	public void setFirstBarIncValue() {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-
-				@Override
-				public void run() {
-					firstBar.setValue(firstBar.getValue() + 1);
-				}
-			});
-		} catch (InvocationTargetException | InterruptedException e) {
-
-		}
+		firstBar.setValue(firstBar.getValue() + 1);
 	}
 
 	public void setSecondBarIncValue() {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-
-				@Override
-				public void run() {
-					secondBar.setValue(secondBar.getValue() + 1);
-				}
-			});
-		} catch (InvocationTargetException | InterruptedException e) {
-
-		}
+		secondBar.setValue(secondBar.getValue() + 1);
 	}
 
 	public void runWork(final SwingWorker<?, ?> worker) {
@@ -157,11 +115,10 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("state".equals(evt.getPropertyName()))
 
-			if (SwingWorker.StateValue.STARTED.equals(evt.getNewValue()) || 
-					SwingWorker.StateValue.PENDING.equals(evt.getNewValue())) {
-				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));			
-			} else
-			if (SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+			if (SwingWorker.StateValue.STARTED.equals(evt.getNewValue())
+					|| SwingWorker.StateValue.PENDING.equals(evt.getNewValue())) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			} else if (SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
 				setCursor(Cursor.getDefaultCursor());
 				worker.removePropertyChangeListener(this);
 				worker.cancel(false);

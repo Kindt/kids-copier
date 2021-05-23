@@ -35,7 +35,6 @@ public class FilesProcess {
 		pd.setFirstBarSize(fArray.length);
 		for (File file : fArray) {
 			pd.setFirstLabelText("Working with a file " + file.getName());
-			pd.setFirstBarIncValue();
 			Cliche cliche = ClicheParser.parse(file);
 			Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
 			Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
@@ -43,22 +42,26 @@ public class FilesProcess {
 			pd.setSecondBarSize(cliche.getAmountCopyes());
 			pd.setSecondLabelText("The process of creating copies.");
 			for (int i = 0; i < cliche.getAmountCopyes(); i++) {
-				pd.setSecondBarIncValue();
 				String xml = cliche.getMainText();
 				String outFileName = cliche.getFileNameMask();
 				for (Entry<String, FormulasAbstract> entry : formulasValues.entrySet()) {
 					String key = "\\$\\{" + entry.getKey() + "\\}";
 					FormulasAbstract formula = entry.getValue();
 					if (formula.isLoop()) {
-						while (Pattern.compile(key).matcher(xml).find())
-							xml = xml.replaceFirst(key, formula.getValue());
+						while (Pattern.compile(key).matcher(xml).find()) {
+							String val = formula.getValue();
+							if (!cliche.getXmlVersion().isEmpty())
+								val = StringEscapeUtils.escapeXml11(val);
+							xml = xml.replaceFirst(key, val);
+						}
 
-						while (Pattern.compile(key).matcher(outFileName).find())
+						while (Pattern.compile(key).matcher(outFileName).find()) {
 							outFileName = outFileName.replaceFirst(key, formula.getValue());
+						}
 					} else {
 						String val = formula.getValue();
 						if (!cliche.getXmlVersion().isEmpty())
-							val = StringEscapeUtils.escapeXml(val);
+							val = StringEscapeUtils.escapeXml11(val);
 						xml = xml.replaceAll(key, val);
 						outFileName = outFileName.replaceAll(key, val);
 					}
@@ -78,9 +81,11 @@ public class FilesProcess {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				pd.setSecondBarIncValue();
 			}
 			calcFormulas.clear();
 			formulasValues.clear();
+			pd.setFirstBarIncValue();
 		}
 	}
 
@@ -90,7 +95,6 @@ public class FilesProcess {
 		pd.setSecondBarSize(calcFormulas.size());
 		pd.setSecondLabelText("Preparing formulas");
 		for (Entry<String, Map<String, Boolean>> entry : calcFormulas.entrySet()) {
-			pd.setSecondBarIncValue();
 			String key = entry.getKey();
 			Map<String, Boolean> map = entry.getValue();
 			Entry<String, Boolean> val = map.entrySet().iterator().next();
@@ -119,6 +123,7 @@ public class FilesProcess {
 
 			fomulaClass.init(arguments, isLoop);
 			result.put(key, fomulaClass);
+			pd.setSecondBarIncValue();
 		}
 		return result;
 	}
