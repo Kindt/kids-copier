@@ -5,10 +5,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import org.apache.commons.io.FileUtils;
 
 import ru.kids.copier.process.FilesProcess;
+import ru.kids.copier.ui.ProgressDialog;
 
 public class MainCopier {
 
@@ -40,9 +42,9 @@ public class MainCopier {
 		if (!inFolder.exists()) {
 			inFolder.mkdirs();
 			JOptionPane.showMessageDialog(null,
-					"Входная папка не была найдена!\nПапка создана!\nДобавьте файлы клише и повторите попытку!\nПуть к созданной папке:"
+					"The input folder was not found!\nFolder created!\nAdd the cliche files and try again!\nPath to the created folder:"
 							+ inFolder.getAbsolutePath(),
-					"Ошибка!", JOptionPane.ERROR_MESSAGE);
+					"Error!", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -57,9 +59,9 @@ public class MainCopier {
 
 		if (fArray.length == 0) {
 			JOptionPane.showMessageDialog(null,
-					"Входная папка не содержит файлов \".cliche\"!\nДобавьте файлы клише и повторите попытку!\nПуть к папке:"
+					"The input folder does not contain \".cliche\" files!\nAdd the cliche files and try again!\nFolder path:"
 							+ inFolder.getAbsolutePath(),
-					"Ошибка!", JOptionPane.ERROR_MESSAGE);
+					"Error!", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -72,23 +74,32 @@ public class MainCopier {
 			} catch (IOException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null,
-						"Ошибка очистки папки выходных файлов!\nПуть к папке:" + outFolder.getAbsolutePath(), "Ошибка!",
+						"Error clearing the output file folder!\nFolder path:" + outFolder.getAbsolutePath(), "Error!",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-		FilesProcess proc = new FilesProcess(fArray, outFolder);
-
+		boolean isError = false;
 		try {
-			proc.process();
+			ProgressDialog pd = new ProgressDialog(null, "Kids copier in progress...");
+			pd.runWork(new SwingWorker<Boolean, Object>() {
+
+				@Override
+				protected Boolean doInBackground() throws Exception {
+					FilesProcess proc = new FilesProcess(fArray, outFolder, pd);
+					proc.process();
+					return true;
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Ошибка работы приложения", "Ошибка!", JOptionPane.ERROR_MESSAGE);
-			return;
+			JOptionPane.showMessageDialog(null, "Application error:\n"+e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+			isError = true;
 		}
 
-		JOptionPane.showMessageDialog(null,
-				"Работа завершена.\nГотоые файлы находятся в папке: " + outFolder.getAbsolutePath(), "Сообщение!",
-				JOptionPane.INFORMATION_MESSAGE);
+		if (!isError)
+			JOptionPane.showMessageDialog(null,
+					"The job is finished.\nThe finished files are located in the folder: " + outFolder.getAbsolutePath(), "Message!",
+					JOptionPane.INFORMATION_MESSAGE);
 	}
 }
