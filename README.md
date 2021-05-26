@@ -1,2 +1,2 @@
 # kids-copier
- Копирование xml и txt файлов по заданным шаблонам
+ Copying xml, txt, and generally any text files, structured or not, according to the specified templates
