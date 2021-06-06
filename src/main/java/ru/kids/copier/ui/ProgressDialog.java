@@ -5,6 +5,8 @@ import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -62,7 +64,7 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 		gbc_secondPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_secondPanel.weightx = 1.0;
 		gbc_secondPanel.weighty = 1.0;
-		gbc_secondPanel.anchor = GridBagConstraints.NORTH;
+		gbc_secondPanel.anchor = GridBagConstraints.CENTER;
 		gbc_secondPanel.gridx = 0;
 		gbc_secondPanel.gridy = 1;
 		getContentPane().add(secondPanel, gbc_secondPanel);
@@ -75,7 +77,16 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 		secondBar.setStringPainted(true);
 		secondBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		secondPanel.add(secondBar, BorderLayout.SOUTH);
+
 		setLocationRelativeTo(null);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				setCursor(Cursor.getDefaultCursor());
+				worker.cancel(true);
+				worker = null;
+			}
+		});
 	}
 
 	public void setFirstLabelText(String string) {
@@ -114,7 +125,6 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("state".equals(evt.getPropertyName()))
-
 			if (SwingWorker.StateValue.STARTED.equals(evt.getNewValue())
 					|| SwingWorker.StateValue.PENDING.equals(evt.getNewValue())) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -125,6 +135,10 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 				setVisible(false);
 				dispose();
 			}
+	}
+	
+	public boolean isCanseled() {
+		return worker.isCancelled();
 	}
 
 }

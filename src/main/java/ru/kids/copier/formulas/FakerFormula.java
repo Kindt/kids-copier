@@ -4,14 +4,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.rmi.activation.ActivateFailedException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import com.github.javafaker.Faker;
 
-@SuppressWarnings("removal")
+import ru.kids.copier.exceptions.ActivateException;
+import ru.kids.copier.exceptions.GenerateValueException;
+
 public class FakerFormula extends FormulasAbstract {
 
 	private String formulaArgs;
@@ -20,15 +21,13 @@ public class FakerFormula extends FormulasAbstract {
 	private Method m;
 	private String[] args;
 	private Object[] params;
-	private static Faker f;
+	private static Faker f = new Faker(new Locale("ru"));
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void init(String formulaArgs) {
+	public void init(String formulaArgs) throws ActivateException {
 		this.formulaArgs = formulaArgs;
 		args = formulaArgs.trim().split(",");
 		String[] args1 = args[0].trim().split("\\.");
-		f = new Faker(new Locale("ru"));
 		Class<?> findClass = f.getClass();
 
 		try {
@@ -45,7 +44,7 @@ public class FakerFormula extends FormulasAbstract {
 			params = new Object[argumentsArr.length];
 			m = getMethod(argumentsArr, findClass, function, params);
 			if (m == null)
-				new ActivateFailedException("Ошибка при формировании значения функции faker(" + formulaArgs + ")");
+				throw new ActivateException("Ошибка при формировании значения функции faker(" + formulaArgs + ")");
 			m.setAccessible(true);
 			Constructor<?>[] constrs = findClass.getDeclaredConstructors();
 			constr = constrs[0];
@@ -55,9 +54,8 @@ public class FakerFormula extends FormulasAbstract {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public String getValue() {
+	public String getValue() throws GenerateValueException {
 
 		String result = "";
 
@@ -83,13 +81,13 @@ public class FakerFormula extends FormulasAbstract {
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| InstantiationException e) {
 			e.printStackTrace();
-			new ActivateFailedException("Ошибка при формировании значения функции faker(" + formulaArgs + ")");
+			throw new GenerateValueException("Ошибка при формировании значения функции faker(" + formulaArgs + ")");
 		}
 		return result;
 	}
 
 	private Method getMethod(final String[] arguments, final Class<?> findClass, final String function,
-			Object[] reasult) throws NoSuchMethodException, SecurityException {
+			Object[] reasult) throws SecurityException {
 		for (Method method : findClass.getDeclaredMethods()) {
 			if (method.getName().equalsIgnoreCase(function)) {
 				Parameter[] parameters = method.getParameters();
@@ -116,6 +114,7 @@ public class FakerFormula extends FormulasAbstract {
 						}
 						return method;
 					} catch (Exception ignore) {
+						// ignoring conversion errors
 					}
 				}
 			}
