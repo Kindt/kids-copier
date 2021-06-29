@@ -11,9 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.kids.copier.exceptions.ActivateException;
-import ru.kids.copier.exceptions.CanselException;
-import ru.kids.copier.exceptions.GenerateValueException;
 import ru.kids.copier.process.FilesProcess;
 import ru.kids.copier.ui.ProgressDialog;
 
@@ -103,7 +100,7 @@ public class MainCopier {
 					FilesProcess proc = new FilesProcess(fArray, outFolder, pd);
 					try {
 						proc.process();
-					} catch (GenerateValueException | ActivateException | CanselException e) {
+					} catch (Exception e) {
 						errorMsg[0] = e.getMessage();
 						logger.error(e.getMessage(), e);
 					}

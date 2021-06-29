@@ -3,14 +3,22 @@ package ru.kids.copier.process;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.xml.sax.SAXException;
 
 import ru.kids.copier.exceptions.ActivateException;
 import ru.kids.copier.exceptions.CanselException;
@@ -33,7 +41,7 @@ public class FilesProcess {
 		this.pd = pd;
 	}
 
-	public void process() throws GenerateValueException, ActivateException, CanselException {
+	public void process() throws GenerateValueException, ActivateException, CanselException, IOException, SAXException {
 
 		pd.setFirstBarSize(fArray.length);
 		for (File file : fArray) {
@@ -41,19 +49,36 @@ public class FilesProcess {
 				throw new CanselException();
 			
 			pd.setFirstLabelText("Working with a file " + file.getName());
-			Cliche cliche = ClicheParser.parse(file);
-			Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
-			Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
+			
+			if (checkedSchema(file)) {
 
-			pd.setSecondBarSize(cliche.getAmountCopyes());
-			pd.setSecondLabelText("The process of creating copies.");
+				Cliche cliche = ClicheParser.parse(file);
+				Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
+				Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
 
-			processFillCopyes(cliche, formulasValues, file);
+				pd.setSecondBarSize(cliche.getAmountCopyes());
+				pd.setSecondLabelText("The process of creating copies.");
 
-			calcFormulas.clear();
-			formulasValues.clear();
-			pd.setFirstBarIncValue();
+				processFillCopyes(cliche, formulasValues, file);
+
+				calcFormulas.clear();
+				formulasValues.clear();
+				pd.setFirstBarIncValue();
+			}
 		}
+	}
+
+	private boolean checkedSchema(File file) throws IOException, SAXException {
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("schemas/schema.xsd");){
+			
+			StreamSource ss = new StreamSource(is);
+ 
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(ss);
+            Validator validator = schema.newValidator();
+            validator.validate(new StreamSource(file));
+            return true;
+        }
 	}
 
 	private void processFillCopyes(Cliche cliche, Map<String, FormulasAbstract> formulasValues, File file)
