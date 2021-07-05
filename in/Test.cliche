@@ -1,52 +1,83 @@
 <?xml version="1.0" encoding="Windows-1251"?>
 <cliche>
 	<formulas>
-		<formula name="calcDate" formula="calcdate(1, 'day', -2, 'year', -2, 'week', -2, 'month', 'yyyy-MM-dd')"/>
-		<formula name="currDate" formula="currentdate('yyyy-MM-dd')"/>
-		<formula name="currDate1" formula="currentdate('yyyyMMdd')"/>
-		<formula name="currDateTime" formula="currentdate('yyyy-MM-dd hh:mm:ss')"/>
-		<formula name="inc1" formula="inc(0,1)" isLoop="true"/>
-		<formula name="inn" formula="inn('fl','7812')" isLoop="true"/>
-		<formula name="ogrn" formula="ogrn()" isLoop="true"/>
-		<formula name="ogrnip" formula="ogrnip()" isLoop="true"/>
-		<formula name="inn1" formula="inn('ul','78')" isLoop="true"/>
-		<formula name="inn2" formula="inn('inul')" isLoop="true"/>
-		<formula name="inn3" formula="inn('fl')" isLoop="true"/>
-		<formula name="schet" formula="rschet()" isLoop="true"/>
-		<formula name="schet1" formula="rschet('810','103','22','33',38)" isLoop="true"/>
-		<formula name="kpp" formula="kpp('fl','7812')" isLoop="true"/>
-		<formula name="randomset" formula="randomset('fl','7812')" isLoop="true"/>
-		<formula name="incpadleft" formula="incpadleft(0,1,6,'0')"/>
-		<formula name="incpadleft1" formula="incpadleft(0,1,6,'0')" isLoop="true"/>
-		<formula name="faker" formula="faker(date.birthday(18;65), 'yyyy-MM-dd')" isLoop="true"/>
-		<formula name="fakerDune" formula="faker(dune.character)" isLoop="true"/>
-		<formula name="fakerPhone" formula="faker(phoneNumber.phoneNumber)" isLoop="true"/>
+		<formula name="calcDate"				formula="calcdate(1, 'day', -2, 'year', -2, 'week', -2, 'month', 'yyyy-MM-dd')"/>
+		<formula name="currDate"				formula="currentdate('yyyy-MM-dd')"/>
+		<formula name="currDate1"				formula="currentdate('yyyyMMdd')"/>
+		<formula name="currDateTime"			formula="currentdate('yyyy-MM-dd hh:mm:ss')"/>
+		<formula name="inc"						formula="inc(0,1)"/>
+		<formula name="incpadleft_loop"			formula="incpadleft(0,1,6,'0')" isLoop="true"/>
+		<formula name="ogrn"					formula="ogrn()" isLoop="true"/>
+		<formula name="ogrn_type"				formula="ogrn('1')" isLoop="true"/>
+		<formula name="ogrn_type_year"			formula="ogrn('1','03')" isLoop="true"/>
+		<formula name="ogrn_type_year_reg"		formula="ogrn('1','03','78')" isLoop="true"/>
+		<formula name="ogrnip"					formula="ogrnip()" isLoop="true"/>
+		<formula name="ogrnip_type"				formula="ogrnip('1')" isLoop="true"/>
+		<formula name="ogrnip_type_year"		formula="ogrnip('1','03')" isLoop="true"/>
+		<formula name="ogrnip_type_year_reg"	formula="ogrnip('1','03','78')" isLoop="true"/>
+		<formula name="inn_ul"					formula="inn('ul')" isLoop="true"/>
+		<formula name="inn_ul_reg"				formula="inn('ul','78')" isLoop="true"/>
+		<formula name="inn_ul_reg_no"			formula="inn('ul','7812')" isLoop="true"/>
+		<formula name="inn_fl"					formula="inn('fl')" isLoop="true"/>
+		<formula name="inn_fl_reg"				formula="inn('fl','78')" isLoop="true"/>
+		<formula name="inn_fl_reg_no"			formula="inn('fl','7812')" isLoop="true"/>
+		<formula name="inn_inul"				formula="inn('inul')" isLoop="true"/>
+		<formula name="kpp_def"					formula="kpp()" isLoop="true"/>
+		<formula name="kpp_ul"					formula="kpp('ul')" isLoop="true"/>
+		<formula name="kpp_ul_kodno"			formula="kpp('ul','7812')" isLoop="true"/>
+		<formula name="kpp_inul"				formula="kpp('inul')" isLoop="true"/>
+		<formula name="schet"					formula="rschet()" isLoop="true"/>
+		<formula name="schet_kodval"			formula="rschet('810')" isLoop="true"/>
+		<formula name="schet_kodval_firstP"		formula="rschet('810','103')" isLoop="true"/>
+		<formula name="schet_kodval_firstP_secondP" formula="rschet('810','103','22')" isLoop="true"/>
+		<formula name="schet_kodval_firstP_secondP_nombank" formula="rschet('810','103','22','2880')" isLoop="true"/>
+		<formula name="schet_kodval_firstP_secondP_nombank_pornomstart" formula="rschet('810','103','22','2880','38')" isLoop="true"/>
+		<formula name="randomset"				formula="randomset('fl','7812','random text','16489')" isLoop="true"/>
+		<formula name="faker_date_betvin_years_old"	formula="faker(date.birthday(18;65), 'yyyy-MM-dd')" isLoop="true"/>
+		<formula name="faker_dune_character"	formula="faker(dune.character)" isLoop="true"/>
+		<formula name="faker_phone"				formula="faker(phoneNumber.phoneNumber)" isLoop="true"/>
 	</formulas>
 	<loopTexts>
-		<loopText name="text" amountCopyes="20">
-<![CDATA[
-				<loopText>
-					<element calcDate="${currDate}"/>
-					<element currDate="${currDate}"/>
-					<element currDate1="${currDate1}"/>
-					<element currDateTime="${currDateTime}"/>
-					<element inc1="${inc1}"/>
-					<element inn="${inn}"/>
-					<element inn2="${inn2}"/>
-					<element inn3="${inn3}"/>	
-					<element schet="${schet}"/>	
-					<element schet1="${schet1}"/>	
-					<element kpp="${kpp}"/>	
-					<element randomset="${randomset}"/>	
-					<element incpadleft="${incpadleft}"/>	
-					<element incpadleft1="${incpadleft1}"/>	
-					<element faker="${faker}"/>	
-					<element fakerDune="${fakerDune}"/>	
-					<element fakerPhone="${fakerPhone}"/>	
-				</loopText> ]]></loopText>
-		<loopText name="loopText" amountCopyes="10"><![CDATA[ some kind of repetitive text]]></loopText>
+		<loopText name="loopXML" amountCopyes="20">
+<![CDATA[	<loopXML>
+		<element calcDate="${calcDate}"/>
+		<element currDate="${currDate}"/>
+		<element currDate1="${currDate1}"/>
+		<element currDateTime="${currDateTime}"/>
+		<element ogrn="${ogrn}"/>
+		<element ogrn_type="${ogrn_type}"/>
+		<element ogrn_type_year="${ogrn_type_year}"/>
+		<element ogrn_type_year_reg="${ogrn_type_year_reg}"/>
+		<element ogrnip="${ogrnip}"/>
+		<element ogrnip_type="${ogrnip_type}"/>
+		<element ogrnip_type_year="${ogrnip_type_year}"/>
+		<element ogrnip_type_year_reg="${ogrnip_type_year_reg}"/>
+		<element inn_ul="${inn_ul}"/>
+		<element inn_ul_reg="${inn_ul_reg}"/>
+		<element inn_ul_reg_no="${inn_ul_reg_no}"/>
+		<element inn_fl="${inn_fl}"/>	
+		<element inn_fl_reg="${inn_fl_reg}"/>
+		<element inn_fl_reg_no="${inn_fl_reg_no}"/>
+		<element inn_inul="${inn_inul}"/>
+		<element kpp_def="${kpp_def}"/>
+		<element kpp_ul="${kpp_ul}"/>	
+		<element kpp_ul_kodno="${kpp_ul_kodno}"/>	
+		<element kpp_inul="${kpp_inul}"/>	
+		<element schet="${schet}"/>	
+		<element schet_kodval="${schet_kodval}"/>	
+		<element schet_kodval_firstP="${schet_kodval_firstP}"/>	
+		<element schet_kodval_firstP_secondP="${schet_kodval_firstP_secondP}"/>	
+		<element schet_kodval_firstP_secondP_nombank="${schet_kodval_firstP_secondP_nombank}"/>	
+		<element schet_kodval_firstP_secondP_nombank_pornomstart="${schet_kodval_firstP_secondP_nombank_pornomstart}"/>	
+		<element randomset="${randomset}"/>	
+		<element incpadleft_loop="${incpadleft_loop}"/>	
+		<element faker_date_betvin_years_old="${faker_date_betvin_years_old}"/>	
+		<element faker_dune_character="${faker_dune_character}"/>	
+		<element faker_phone="${faker_phone}"/>	
+	</loopXML> ]]></loopText>
+		<loopText name="loopText" amountCopyes="100"><![CDATA[ some kind of repetitive text]]></loopText>
 	</loopTexts>
-	<fileNameMask>TestDocument_${currDate1}_${incpadleft}.xml</fileNameMask>
+	<fileNameMask>TestDocument_${currDate1}_${inc}.xml</fileNameMask>
 	<amountCopyes>20</amountCopyes>
 	<toSubFolder>false</toSubFolder>
 	<encoding>windows-1251</encoding>
@@ -54,25 +85,42 @@
 	<mainText>
 <![CDATA[
 <root dateFile="${currDate}">
-	<element calcDate="${currDate}"/>
+	<element calcDate="${calcDate}"/>
 	<element currDate="${currDate}"/>
 	<element currDate1="${currDate1}"/>
 	<element currDateTime="${currDateTime}"/>
-	<element inc1="${inc1}"/>
-	<element inn="${inn}"/>
-	<element inn2="${inn2}"/>
-	<element inn3="${inn3}"/>	
+	<element ogrn="${ogrn}"/>
+	<element ogrn_type="${ogrn_type}"/>
+	<element ogrn_type_year="${ogrn_type_year}"/>
+	<element ogrn_type_year_reg="${ogrn_type_year_reg}"/>
+	<element ogrnip="${ogrnip}"/>
+	<element ogrnip_type="${ogrnip_type}"/>
+	<element ogrnip_type_year="${ogrnip_type_year}"/>
+	<element ogrnip_type_year_reg="${ogrnip_type_year_reg}"/>
+	<element inn_ul="${inn_ul}"/>
+	<element inn_ul_reg="${inn_ul_reg}"/>
+	<element inn_ul_reg_no="${inn_ul_reg_no}"/>
+	<element inn_fl="${inn_fl}"/>	
+	<element inn_fl_reg="${inn_fl_reg}"/>
+	<element inn_fl_reg_no="${inn_fl_reg_no}"/>
+	<element inn_inul="${inn_inul}"/>
+	<element kpp_def="${kpp_def}"/>
+	<element kpp_ul="${kpp_ul}"/>	
+	<element kpp_ul_kodno="${kpp_ul_kodno}"/>	
+	<element kpp_inul="${kpp_inul}"/>	
 	<element schet="${schet}"/>	
-	<element schet1="${schet1}"/>	
-	<element kpp="${kpp}"/>	
-	<element randomset="${randomset}"/>	
-	<element incpadleft="${incpadleft}"/>	
-	<element incpadleft1="${incpadleft1}"/>	
-	<element faker="${faker}"/>	
-	<element fakerDune="${fakerDune}"/>	
-	<element fakerPhone="${fakerPhone}"/>	
+	<element schet_kodval="${schet_kodval}"/>	
+	<element schet_kodval_firstP="${schet_kodval_firstP}"/>	
+	<element schet_kodval_firstP_secondP="${schet_kodval_firstP_secondP}"/>	
+	<element schet_kodval_firstP_secondP_nombank="${schet_kodval_firstP_secondP_nombank}"/>	
+	<element schet_kodval_firstP_secondP_nombank_pornomstart="${schet_kodval_firstP_secondP_nombank_pornomstart}"/>	
+	<element randomset="${randomset}"/>		
+	<element incpadleft_loop="${incpadleft_loop}"/>	
+	<element faker_date_betvin_years_old="${faker_date_betvin_years_old}"/>	
+	<element faker_dune_character="${faker_dune_character}"/>	
+	<element faker_phone="${faker_phone}"/>	
 	<element loopText="${loopText}"/>	
-	${text}
+	${loopXML}
 </root>
 		]]></mainText>
 </cliche>
