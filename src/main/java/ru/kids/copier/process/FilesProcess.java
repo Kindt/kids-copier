@@ -18,6 +18,8 @@ import javax.xml.validation.Validator;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import ru.kids.copier.exceptions.ActivateException;
@@ -31,6 +33,7 @@ import ru.kids.copier.xml.ClicheParser;
 @SuppressWarnings("deprecation")
 public class FilesProcess {
 
+	private static final Logger logger = LogManager.getRootLogger();
 	private File[] fArray;
 	private File outFolder;
 	private ProgressDialog pd;
@@ -45,40 +48,48 @@ public class FilesProcess {
 
 		pd.setFirstBarSize(fArray.length);
 		for (File file : fArray) {
-			if(pd.isCanseled())
+
+			logger.info("Getting started with the cliche file: " + file.getName());
+			if (pd.isCanseled())
 				throw new CanselException();
+
+			pd.setFirstLabelText("Working with a file: " + file.getName());
+
+			checkedSchema(file);
+
+			logger.info("Initializing the cliche file");
+			Cliche cliche = ClicheParser.parse(file);
 			
-			pd.setFirstLabelText("Working with a file " + file.getName());
-			
-			if (checkedSchema(file)) {
 
-				Cliche cliche = ClicheParser.parse(file);
-				Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
-				Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
+			logger.info("Initializing cliche formulas");
+			Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
+			Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
 
-				pd.setSecondBarSize(cliche.getAmountCopyes());
-				pd.setSecondLabelText("The process of creating copies.");
+			pd.setSecondBarSize(cliche.getAmountCopyes());
+			pd.setSecondLabelText("The process of creating copies.");
 
-				processFillCopyes(cliche, formulasValues, file);
+			logger.info("Creating copies of files");
+			processFillCopyes(cliche, formulasValues, file);
 
-				calcFormulas.clear();
-				formulasValues.clear();
-				pd.setFirstBarIncValue();
-			}
+			calcFormulas.clear();
+			formulasValues.clear();
+			pd.setFirstBarIncValue();
+
+			logger.info("End of working with the cliche file: " + file.getName());
 		}
 	}
 
-	private boolean checkedSchema(File file) throws IOException, SAXException {
-		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("schemas/schema.xsd");){
-			
+	private void checkedSchema(File file) throws IOException, SAXException {
+		logger.info("Checking according to the scheme of the cliche file");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("schemas/schema.xsd");) {
+
 			StreamSource ss = new StreamSource(is);
- 
-            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = factory.newSchema(ss);
-            Validator validator = schema.newValidator();
-            validator.validate(new StreamSource(file));
-            return true;
-        }
+
+			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = factory.newSchema(ss);
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(file));
+		}
 	}
 
 	private void processFillCopyes(Cliche cliche, Map<String, FormulasAbstract> formulasValues, File file)
@@ -87,13 +98,13 @@ public class FilesProcess {
 			String xml = cliche.getMainText();
 			String outFileName = cliche.getFileNameMask();
 			for (Entry<String, FormulasAbstract> entry : formulasValues.entrySet()) {
-				if(pd.isCanseled())
+				if (pd.isCanseled())
 					throw new CanselException();
 				String key = "\\$\\{" + entry.getKey() + "\\}";
 				FormulasAbstract formula = entry.getValue();
 				if (formula.isLoop()) {
 					while (Pattern.compile(key).matcher(xml).find()) {
-						if(pd.isCanseled())
+						if (pd.isCanseled())
 							throw new CanselException();
 						String val = formula.getValue();
 						if (!cliche.getXmlVersion().isEmpty())
@@ -102,7 +113,7 @@ public class FilesProcess {
 					}
 
 					while (Pattern.compile(key).matcher(outFileName).find()) {
-						if(pd.isCanseled())
+						if (pd.isCanseled())
 							throw new CanselException();
 						outFileName = outFileName.replaceFirst(key, formula.getValue());
 					}

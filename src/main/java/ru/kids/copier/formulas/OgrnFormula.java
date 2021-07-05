@@ -27,21 +27,21 @@ public class OgrnFormula extends InnFormula {
 		String year;
 		String okatoCode;
 
-		if (args.length > 0)
-			firstChar = args[0].trim().replace("'", "").toUpperCase();
+		if (args.length > 0 && !args[0].trim().isEmpty())
+			firstChar = args[0].trim().replace("'", "");
 		else
 			firstChar = (rnd.nextInt(9) + 1) + "";
 
 		if (args.length > 1)
-			year = args[0].trim().replace("'", "").toUpperCase();
+			year = args[1].trim().replace("'", "");
 		else
 			year = rnd.nextInt(100) + "";
 		
 		if(year.length() < 2)
 			year = StringUtils.leftPad(year, 2, '0');
 		
-		if (args.length > 1)
-			okatoCode = args[1].trim().replace("'", "");
+		if (args.length > 2)
+			okatoCode = args[2].trim().replace("'", "");
 		else
 			okatoCode = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
 		

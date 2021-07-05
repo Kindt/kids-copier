@@ -115,10 +115,11 @@ public class MainCopier {
 		if (!isError || errorMsg[0].isEmpty()) {
 			JOptionPane.showMessageDialog(null, "The job is finished.\nThe finished files are located in the folder: "
 					+ outFolder.getAbsolutePath(), "Message!", JOptionPane.INFORMATION_MESSAGE);
+			logger.info("The job is finished.\n\n\n");
 		} else {
 			JOptionPane.showMessageDialog(null, "Application error:\n" + errorMsg[0], "Error!",
 					JOptionPane.ERROR_MESSAGE);
-			logger.error(errorMsg[0]);
+			logger.error(errorMsg[0] + "\n\n\n");
 		}
 	}
 }

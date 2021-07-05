@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class InnFormula extends FormulasAbstract {
 
-	private static int size = 10;
-	protected static String kodNO = "";
+	private int size = 10;
+	protected String kodNO = "";
 
 	private static final Pattern innPatter = Pattern.compile("\\d{10}||\\d{12}");
 
@@ -63,22 +63,22 @@ public class InnFormula extends FormulasAbstract {
 		return result.toString();
 	}
 
-	private static boolean isValidINN(String inn) {
+	private boolean isValidINN(String inn) {
 		if (!innPatter.matcher(inn).matches()) {
 			return false;
 		}
 		if (size == 12) {
-			return INNStep(inn, 2, 1) && INNStep(inn, 1, 0);
+			return innStep(inn, 2, 1) && innStep(inn, 1, 0);
 		} else {
-			return INNStep(inn, 1, 2);
+			return innStep(inn, 1, 2);
 		}
 	}
 
-	private static boolean INNStep(String inn, int offset, int arrOffset) {
+	private boolean innStep(String inn, int offset, int arrOffset) {
 		return getSumm(inn, offset, arrOffset) == inn.charAt(inn.length() - offset) - '0';
 	}
 
-	private static int getSumm(String inn, int offset, int arrOffset) {
+	private int getSumm(String inn, int offset, int arrOffset) {
 		int sum = 0;
 		for (int i = 0; i < size - offset; i++) {
 			sum += (inn.charAt(i) - '0') * checkArr[i + arrOffset];
