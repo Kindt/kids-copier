@@ -20,7 +20,7 @@ public class Cliche {
 	}
 
 	public void putCalcFormulas(String name, String formula, boolean isLoop) {
-		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Map<String, Boolean> map = new HashMap<>();
 		map.put(formula, isLoop);
 		this.calcFormulas.put(name, map);
 	}

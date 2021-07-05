@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 
+import ru.kids.copier.exceptions.InitGeneratorValueException;
+
 public class RschetFormula extends FormulasAbstract {
 
 	private static final Random rnd = new Random();
@@ -34,7 +36,9 @@ public class RschetFormula extends FormulasAbstract {
 
 		int checkSumm = 0;
 		for (int i = 0; i < result.length(); i++) {
-			checkSumm += Integer.parseInt(result.substring(i, i + 1)) * (i % 3 == 0 ? 7 : (i % 3 == 1 ? 1 : 3));
+			int multiplier = i % 3 == 1 ? 1 : 3;
+			multiplier = i % 3 == 0 ? 7 : multiplier;
+			checkSumm += Integer.parseInt(result.substring(i, i + 1)) * multiplier;
 		}
 
 		checkSumm = ((checkSumm % 10) * 3) % 10;
@@ -43,7 +47,7 @@ public class RschetFormula extends FormulasAbstract {
 	}
 
 	@Override
-	public void init(String formulaArgs) {
+	public void init(String formulaArgs) throws InitGeneratorValueException {
 		String kodval;
 		String firstR;
 		String secondR;
@@ -76,6 +80,9 @@ public class RschetFormula extends FormulasAbstract {
 		if (args.length > 4)
 			nomPor = Integer.parseInt(args[4].trim().replace("'", ""));
 
+		if (args.length > 5)
+			throw new InitGeneratorValueException("Incorrect number of arguments.");
+		
 		rschet = new StringBuilder(firstR);
 		rschet.append(secondR);
 		rschet.append(kodval);

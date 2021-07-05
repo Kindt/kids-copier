@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 import ru.kids.copier.exceptions.ActivateException;
 import ru.kids.copier.exceptions.CanselException;
 import ru.kids.copier.exceptions.GenerateValueException;
+import ru.kids.copier.exceptions.InitGeneratorValueException;
 import ru.kids.copier.formulas.FormulasAbstract;
 import ru.kids.copier.formulas.StringConstantFormula;
 import ru.kids.copier.ui.ProgressDialog;
@@ -44,7 +45,7 @@ public class FilesProcess {
 		this.pd = pd;
 	}
 
-	public void process() throws GenerateValueException, ActivateException, CanselException, IOException, SAXException {
+	public void process() throws GenerateValueException, ActivateException, CanselException, IOException, SAXException, InitGeneratorValueException {
 
 		pd.setFirstBarSize(fArray.length);
 		for (File file : fArray) {
@@ -149,7 +150,7 @@ public class FilesProcess {
 	}
 
 	private Map<String, FormulasAbstract> initFormulas(Map<String, Map<String, Boolean>> calcFormulas)
-			throws ActivateException {
+			throws ActivateException, InitGeneratorValueException {
 		Map<String, FormulasAbstract> result = new HashMap<>(calcFormulas.size());
 
 		pd.setSecondBarSize(calcFormulas.size());

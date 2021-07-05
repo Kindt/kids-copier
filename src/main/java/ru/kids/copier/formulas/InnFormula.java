@@ -1,9 +1,12 @@
 package ru.kids.copier.formulas;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+
+import ru.kids.copier.exceptions.InitGeneratorValueException;
 
 public class InnFormula extends FormulasAbstract {
 
@@ -13,6 +16,7 @@ public class InnFormula extends FormulasAbstract {
 	private static final Pattern innPatter = Pattern.compile("\\d{10}||\\d{12}");
 
 	private static final int[] checkArr = new int[] { 3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 };
+	private static final String[] corractFirstParameterValue = new String[] { "ul", "fl", "inul", "" };
 
 	protected static final String[] ocatoCodes = new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09",
 			"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
@@ -24,18 +28,27 @@ public class InnFormula extends FormulasAbstract {
 	protected static final Random rnd = new Random();
 
 	@Override
-	public void init(String formulaArgs) {
+	public void init(String formulaArgs) throws InitGeneratorValueException {
 		String[] args = formulaArgs.split(",");
-		String type = args[0].trim().replace("'", "").toUpperCase();
-		if ("INUL".equals(type))
+		String type = args[0].trim().replace("'", "").toLowerCase();
+		if(!Arrays.asList(corractFirstParameterValue).contains(type))
+			throw new InitGeneratorValueException("Person type is set incorrectly ("+args[0].trim()+")");
+		if ("inul".equalsIgnoreCase(type)) {
 			kodNO = "9909";
-		else {
-			if ("FL".equals(type))
+
+			if (args.length > 1)
+				throw new InitGeneratorValueException("Incorrect number of arguments.");
+				
+		} else {
+			if ("fl".equalsIgnoreCase(type))
 				size = 12;
 			if (args.length > 1)
 				kodNO = args[1].trim().replace("'", "");
 			else
 				kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
+
+			if (args.length > 2)
+				throw new InitGeneratorValueException("Incorrect number of arguments.");
 		}
 		if (kodNO.length() == 2)
 			kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');

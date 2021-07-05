@@ -2,18 +2,19 @@ package ru.kids.copier.formulas;
 
 import ru.kids.copier.exceptions.ActivateException;
 import ru.kids.copier.exceptions.GenerateValueException;
+import ru.kids.copier.exceptions.InitGeneratorValueException;
 
 public abstract class FormulasAbstract {
 
 	protected String value;
 	protected boolean isLoop = false;
 
-	public void init(String formulaArgs, boolean isLoop) throws ActivateException {
+	public void init(String formulaArgs, boolean isLoop) throws ActivateException, InitGeneratorValueException {
 		setLoop(isLoop);
 		init(formulaArgs);
 	}
 
-	public abstract void init(String formulaArgs) throws ActivateException;
+	public abstract void init(String formulaArgs) throws ActivateException, InitGeneratorValueException;
 
 	public boolean isLoop() {
 		return isLoop;

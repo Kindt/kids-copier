@@ -1,10 +1,15 @@
 package ru.kids.copier.formulas;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
+
+import ru.kids.copier.exceptions.InitGeneratorValueException;
 
 public class KppFormula extends InnFormula {
 
 	private int sdvig = 0;
+	private static final String[] corractFirstParameterValue = new String[] { "ul", "inul", "" };
 
 	@Override
 	public String getValue() {
@@ -16,10 +21,17 @@ public class KppFormula extends InnFormula {
 	}
 
 	@Override
-	public void init(String formulaArgs) {
+	public void init(String formulaArgs) throws InitGeneratorValueException {
 		String[] args = formulaArgs.split(",");
-		String type = args[0].trim().replace("'", "").toUpperCase();
-		if ("INUL".equals(type))
+		String type = args[0].trim().replace("'", "").toLowerCase();
+		
+		if(!Arrays.asList(corractFirstParameterValue).contains(type))
+			throw new InitGeneratorValueException("Person type is set incorrectly ("+args[0].trim()+")");
+
+		if (args.length > 2)
+			throw new InitGeneratorValueException("Incorrect number of arguments.");
+		
+		if ("inul".equalsIgnoreCase(type))
 			sdvig = 50;
 		
 		if (args.length > 1)

@@ -44,7 +44,7 @@ public class FakerFormula extends FormulasAbstract {
 			params = new Object[argumentsArr.length];
 			m = getMethod(argumentsArr, findClass, function, params);
 			if (m == null)
-				throw new ActivateException("Ошибка при формировании значения функции faker(" + formulaArgs + ")");
+				throw new ActivateException("Error when forming the function value faker(" + formulaArgs + ")");
 			m.setAccessible(true);
 			Constructor<?>[] constrs = findClass.getDeclaredConstructors();
 			constr = constrs[0];
@@ -81,7 +81,7 @@ public class FakerFormula extends FormulasAbstract {
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| InstantiationException e) {
 			e.printStackTrace();
-			throw new GenerateValueException("Ошибка при формировании значения функции faker(" + formulaArgs + ")");
+			throw new GenerateValueException("Error when forming the function value faker(" + formulaArgs + ")");
 		}
 		return result;
 	}
