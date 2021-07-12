@@ -10,10 +10,11 @@ public class CurrentdateFormula extends FormulasAbstract {
 	@Override
 	public void init(String formulaArgs) throws InitGeneratorValueException {
 
-		if(formulaArgs.trim().replace("'", "").isEmpty()) {
+		String arg = formulaArgs.trim().replace("'", "");
+		if(!arg.isEmpty()) {
 			SimpleDateFormat sdf;
 			try {
-				sdf = new SimpleDateFormat(formulaArgs.trim().replace("'", ""));
+				sdf = new SimpleDateFormat(arg);
 			} catch (Exception e) {
 				throw new InitGeneratorValueException("Date or date and time format error ("+formulaArgs+").");
 			}
