@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Windows-1251"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <cliche>
 	<formulas>
 		<formula name="calcDate"				formula="calcdate(1, 'day', -2, 'year', -2, 'week', -2, 'month', 'yyyy-MM-dd')"/>
