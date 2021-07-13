@@ -1,0 +1,47 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>kid-copier</id>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>src/source/bats</directory>
+			<outputDirectory>kid-copier</outputDirectory>
+			<includes>				
+				<include>**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.build.directory}/archive-tmp/.model/lib</directory>
+			<outputDirectory>kid-copier/lib</outputDirectory>
+			<includes>				
+				<include>**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/source/in</directory>
+			<outputDirectory>kid-copier/in</outputDirectory>
+			<includes>				
+				<include>**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/source/in</directory>
+			<outputDirectory>kid-copier/example</outputDirectory>
+			<includes>				
+				<include>**</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+	<files>
+		<file>
+			<source>readme.md</source>
+			<destName>kid-copier/readme.txt</destName>
+		</file>
+	</files>
+</assembly>
+	
