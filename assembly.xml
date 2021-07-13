@@ -39,7 +39,7 @@
 	</fileSets>
 	<files>
 		<file>
-			<source>readme.md</source>
+			<source>README.md</source>
 			<destName>kid-copier/readme.txt</destName>
 		</file>
 	</files>
