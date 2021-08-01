@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
@@ -45,7 +44,8 @@ public class FilesProcess {
 		this.pd = pd;
 	}
 
-	public void process() throws GenerateValueException, ActivateException, CanselException, IOException, SAXException, InitGeneratorValueException {
+	public void process() throws GenerateValueException, ActivateException, CanselException, IOException, SAXException,
+			InitGeneratorValueException {
 
 		pd.setFirstBarSize(fArray.length);
 		for (File file : fArray) {
@@ -60,7 +60,6 @@ public class FilesProcess {
 
 			logger.info("Initializing the cliche file");
 			Cliche cliche = ClicheParser.parse(file);
-			
 
 			logger.info("Initializing cliche formulas");
 			Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
@@ -98,36 +97,50 @@ public class FilesProcess {
 		for (int i = 0; i < cliche.getAmountCopyes(); i++) {
 			String xml = cliche.getMainText();
 			String outFileName = cliche.getFileNameMask();
-			for (Entry<String, FormulasAbstract> entry : formulasValues.entrySet()) {
+
+			StringBuilder outXml = new StringBuilder();
+			StringBuilder keyName = new StringBuilder();
+
+			for (char ch : xml.toCharArray()) {
 				if (pd.isCanseled())
 					throw new CanselException();
-				String key = "\\$\\{" + entry.getKey() + "\\}";
-				FormulasAbstract formula = entry.getValue();
-				if (formula.isLoop()) {
-					while (Pattern.compile(key).matcher(xml).find()) {
-						if (pd.isCanseled())
-							throw new CanselException();
-						String val = formula.getValue();
-						if (!cliche.getXmlVersion().isEmpty())
-							val = StringEscapeUtils.escapeXml(val);
-						xml = xml.replaceFirst(key, val);
-					}
+				if (ch == '}' && !keyName.isEmpty()) {
+					keyName.append(ch);
+					String value = keyName.toString();
+					if (formulasValues.containsKey(value))
+						value = formulasValues.get(value).getValue();
 
-					while (Pattern.compile(key).matcher(outFileName).find()) {
-						if (pd.isCanseled())
-							throw new CanselException();
-						outFileName = outFileName.replaceFirst(key, formula.getValue());
-					}
-				} else {
-					String val = formula.getValue();
 					if (!cliche.getXmlVersion().isEmpty())
-						val = StringEscapeUtils.escapeXml(val);
-					xml = xml.replaceAll(key, val);
-					outFileName = outFileName.replaceAll(key, val);
-				}
+						value = StringEscapeUtils.escapeXml(value);
+					outXml.append(value);
+					keyName = new StringBuilder();
+				} else if (ch == '$' || !keyName.isEmpty()) {
+					keyName.append(ch);
+				} else
+					outXml.append(ch);
 			}
 
-			createOutFile(cliche, file, outFileName, xml);
+			StringBuilder outFileNameNew = new StringBuilder();
+			for (char ch : outFileName.toCharArray()) {
+				if (pd.isCanseled())
+					throw new CanselException();
+				if (ch == '}' && !keyName.isEmpty()) {
+					keyName.append(ch);
+					String value = keyName.toString();
+					if (formulasValues.containsKey(value))
+						value = formulasValues.get(value).getValue();
+
+					outFileNameNew.append(value);
+					keyName = new StringBuilder();
+				} else if (ch == '$' || !keyName.isEmpty()) {
+					keyName.append(ch);
+				} else
+					outFileNameNew.append(ch);
+			}
+
+			createOutFile(cliche, file, outFileNameNew.toString(), outXml.toString());
+
+			logger.info("Creating file " + outFileNameNew.toString());
 			pd.setSecondBarIncValue();
 		}
 	}
@@ -183,7 +196,7 @@ public class FilesProcess {
 				fomulaClass = new StringConstantFormula();
 
 			fomulaClass.init(arguments, isLoop);
-			result.put(key, fomulaClass);
+			result.put("${" + key + "}", fomulaClass);
 			pd.setSecondBarIncValue();
 		}
 		return result;

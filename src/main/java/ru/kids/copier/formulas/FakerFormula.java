@@ -1,6 +1,7 @@
 package ru.kids.copier.formulas;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -27,7 +28,9 @@ public class FakerFormula extends FormulasAbstract {
 	public void init(String formulaArgs) throws ActivateException {
 		this.formulaArgs = formulaArgs;
 		args = formulaArgs.trim().split(",");
-		String[] args1 = args[0].trim().split("\\.");
+		String firstPatchClass = args[0].trim().contains("(")? args[0].trim().substring(0, args[0].trim().indexOf("(")): args[0].trim();
+		
+		String[] args1 = firstPatchClass.split("\\.");
 		Class<?> findClass = f.getClass();
 
 		try {
@@ -36,10 +39,9 @@ public class FakerFormula extends FormulasAbstract {
 
 			String function = args1[args1.length - 1];
 			String arguments = "";
-			if (function.contains("(")) {
-				arguments = function.substring(function.indexOf("(") + 1, function.lastIndexOf(")"));
-				function = function.substring(0, function.indexOf("(")).toLowerCase();
-			}
+			if (args[0].trim().contains("(")) 
+				arguments = args[0].trim().substring(args[0].trim().indexOf("(") + 1, args[0].trim().lastIndexOf(")"));
+
 			argumentsArr = arguments.isEmpty() ? new String[] {} : arguments.trim().split(";");
 			params = new Object[argumentsArr.length];
 			m = getMethod(argumentsArr, findClass, function, params);
@@ -107,8 +109,11 @@ public class FakerFormula extends FormulasAbstract {
 							case "date":
 								reasult[i] = new SimpleDateFormat().parse(arg);
 								break;
-							default:
+							case "string":
 								reasult[i] = arg.replace("'", "").trim();
+								break;
+							default:
+								reasult[i] = getTypeValue(arg.trim());
 								break;
 							}
 						}
@@ -119,6 +124,18 @@ public class FakerFormula extends FormulasAbstract {
 				}
 			}
 		}
+		return null;
+	}
+
+	private Object getTypeValue(String arg) throws NoSuchFieldException, ClassNotFoundException {
+		
+		Class<?> findClass = getClass().getClassLoader().loadClass(arg.substring(0, arg.lastIndexOf('.')));
+		
+		if(findClass.isEnum())
+			for(Object enumObject :findClass.getEnumConstants()) 
+				if(enumObject.toString().equalsIgnoreCase(arg.substring(arg.lastIndexOf('.')+1)))
+					return enumObject;
+				
 		return null;
 	}
 }

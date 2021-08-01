@@ -11,18 +11,21 @@ public class CalcdateFormula extends FormulasAbstract {
 	@Override
 	public void init(String formulaArgs) throws InitGeneratorValueException {
 		String[] args = formulaArgs.split(",");
-		if(args.length < 2)
+		if(args.length < 1)
 			throw new InitGeneratorValueException("Required parameters are not specified.");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		for (int i = 0; i < args.length - 1; i = i + 2) {
+		for (int i = 0; i < args.length - 1; i++) {
+			String type = args[i].trim().replace("'", "");
+			if(!type.contains(":"))
+				throw new InitGeneratorValueException("Error parameter format. ("+args[i].trim()+") format is [*type*:*count*]");
 			int val = 0;
 			try {
-				val = Integer.parseInt(args[i].trim());
+				val = Integer.parseInt(type.substring(type.indexOf(':')+1));
 			} catch (Exception e) {
 				throw new InitGeneratorValueException("Error converting the parameter value to a number. ("+args[i].trim()+")");
 			}
-			String type = args[i + 1].trim().replace("'", "");
+			type = type.substring(0,type.indexOf(':'));
 			switch (type.toLowerCase()) {
 			case "day":
 				cal.add(Calendar.DAY_OF_YEAR, val);
