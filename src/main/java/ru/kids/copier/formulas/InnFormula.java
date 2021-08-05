@@ -27,39 +27,46 @@ public class InnFormula extends FormulasAbstract {
 
 	protected static final Random rnd = new Random();
 
+	private boolean isKodNO = false;
+
 	@Override
 	public void init(String formulaArgs) throws InitGeneratorValueException {
 		String[] args = formulaArgs.split(",");
 		String type = args[0].trim().replace("'", "").toLowerCase();
-		if(!Arrays.asList(corractFirstParameterValue).contains(type))
-			throw new InitGeneratorValueException("Person type is set incorrectly ("+args[0].trim()+")");
+		if (!Arrays.asList(corractFirstParameterValue).contains(type))
+			throw new InitGeneratorValueException("Person type is set incorrectly (" + args[0].trim() + ")");
 		if ("inul".equalsIgnoreCase(type)) {
-			kodNO = "9909";
-
 			if (args.length > 1)
 				throw new InitGeneratorValueException("Incorrect number of arguments.");
-				
+			isKodNO = true;
+			kodNO = "9909";
 		} else {
-			if ("fl".equalsIgnoreCase(type))
-				size = 12;
-			if (args.length > 1)
-				kodNO = args[1].trim().replace("'", "");
-			else
-				kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
-
 			if (args.length > 2)
 				throw new InitGeneratorValueException("Incorrect number of arguments.");
+
+			if ("fl".equalsIgnoreCase(type))
+				size = 12;
+
+			if (args.length > 1) {
+				kodNO = args[1].trim().replace("'", "");
+				isKodNO = true;
+			}
 		}
-		if (kodNO.length() == 2)
-			kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
 	}
 
 	@Override
-	public String getValue() {
+	public String getFormulaValue() {		
+		if (!isKodNO)
+			kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
+
+		if (kodNO.length() == 2)
+			kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
+
 		String inn = generateInn();
 		while (!isValidINN(inn)) {
 			inn = generateInn();
 		}
+		
 		return inn;
 	}
 

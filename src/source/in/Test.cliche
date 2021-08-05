@@ -7,15 +7,19 @@
 		<formula name="currDateTime"		formula="currentdate('yyyy-MM-dd HH:mm:ss')"/>
 		<formula name="inc"						formula="inc(0,1)"/>
 		<formula name="incpadleft_loop"		formula="incpadleft(0,1,6,'0')" isLoop="true"/>
-		<formula name="ogrn"						formula="ogrn()" isLoop="true"/>
-		<formula name="ogrn_type"				formula="ogrn('1')" isLoop="true"/>
-		<formula name="ogrn_type_year"		formula="ogrn('1','03')" isLoop="true"/>
-		<formula name="ogrn_type_year_reg"	formula="ogrn('1','03','78')" isLoop="true"/>
+		<formula name="ogrnul"					formula="ogrnul()" isLoop="true"/>
+		<formula name="ogrnul_type"				formula="ogrnul('1')" isLoop="true"/>
+		<formula name="ogrnul_type_year"		formula="ogrnul('1','03')" isLoop="true"/>
+		<formula name="ogrnul_type_year_reg"	formula="ogrnul('1','03','78')" isLoop="true"/>
+		<formula name="ogrngos"					formula="ogrngos()" isLoop="true"/>
+		<formula name="ogrngos_type"			formula="ogrngos('2')" isLoop="true"/>
+		<formula name="ogrngos_type_year"		formula="ogrngos('2','03')" isLoop="true"/>
+		<formula name="ogrngos_type_year_reg"	formula="ogrngos('2','03','78')" isLoop="true"/>
 		<formula name="ogrnip"					formula="ogrnip()" isLoop="true"/>
-		<formula name="ogrnip_type"			formula="ogrnip('1')" isLoop="true"/>
-		<formula name="ogrnip_type_year"	formula="ogrnip('1','03')" isLoop="true"/>
-		<formula name="ogrnip_type_year_reg"	formula="ogrnip('1','03','78')" isLoop="true"/>
-		<formula name="inn_ul"					formula="inn('ul')" isLoop="true"/>
+		<formula name="ogrnip_type"			formula="ogrnip('3')" isLoop="true"/>
+		<formula name="ogrnip_type_year"	formula="ogrnip('3','03')" isLoop="true"/>
+		<formula name="ogrnip_type_year_reg"	formula="ogrnip('3','03','78')" isLoop="true"/>
+		<formula name="inn_ul"					formula="inn('ul')" isLoop="true" isUnique="true"/>
 		<formula name="inn_ul_reg"				formula="inn('ul','78')" isLoop="true"/>
 		<formula name="inn_ul_reg_no"		formula="inn('ul','7812')" isLoop="true"/>
 		<formula name="inn_fl"					formula="inn('fl')" isLoop="true"/>
@@ -42,14 +46,19 @@
 	<loopTexts>
 		<loopText name="loopXML" amountCopyes="20">
 <![CDATA[	<loopXML>
+		<element inc="${inc}"/>
 		<element calcDate="${calcDate}"/>
 		<element currDate="${currDate}"/>
 		<element currDate1="${currDate1}"/>
 		<element currDateTime="${currDateTime}"/>
-		<element ogrn="${ogrn}"/>
-		<element ogrn_type="${ogrn_type}"/>
-		<element ogrn_type_year="${ogrn_type_year}"/>
-		<element ogrn_type_year_reg="${ogrn_type_year_reg}"/>
+		<element ogrnul="${ogrnul}"/>
+		<element ogrnul_type="${ogrnul_type}"/>
+		<element ogrnul_type_year="${ogrnul_type_year}"/>
+		<element ogrnul_type_year_reg="${ogrnul_type_year_reg}"/>
+		<element ogrngos="${ogrngos}"/>
+		<element ogrngos_type="${ogrngos_type}"/>
+		<element ogrngos_type_year="${ogrngos_type_year}"/>
+		<element ogrngos_type_year_reg="${ogrngos_type_year_reg}"/>
 		<element ogrnip="${ogrnip}"/>
 		<element ogrnip_type="${ogrnip_type}"/>
 		<element ogrnip_type_year="${ogrnip_type_year}"/>
@@ -93,10 +102,14 @@
 	<element currDate="${currDate}"/>
 	<element currDate1="${currDate1}"/>
 	<element currDateTime="${currDateTime}"/>
-	<element ogrn="${ogrn}"/>
-	<element ogrn_type="${ogrn_type}"/>
-	<element ogrn_type_year="${ogrn_type_year}"/>
-	<element ogrn_type_year_reg="${ogrn_type_year_reg}"/>
+	<element ogrnul="${ogrnul}"/>
+	<element ogrnul_type="${ogrnul_type}"/>
+	<element ogrnul_type_year="${ogrnul_type_year}"/>
+	<element ogrnul_type_year_reg="${ogrnul_type_year_reg}"/>
+	<element ogrngos="${ogrngos}"/>
+	<element ogrngos_type="${ogrngos_type}"/>
+	<element ogrngos_type_year="${ogrngos_type_year}"/>
+	<element ogrngos_type_year_reg="${ogrngos_type_year_reg}"/>
 	<element ogrnip="${ogrnip}"/>
 	<element ogrnip_type="${ogrnip_type}"/>
 	<element ogrnip_type_year="${ogrnip_type_year}"/>

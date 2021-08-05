@@ -10,8 +10,8 @@ public class IncpadleftFormula extends IncFormula {
 	char ch = '0';
 
 	@Override
-	public String getValue() {
-		return StringUtils.leftPad(super.getValue(), size, ch);
+	public String getFormulaValue() {
+		return StringUtils.leftPad(super.getFormulaValue(), size, ch);
 	}
 
 	@Override

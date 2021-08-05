@@ -17,8 +17,8 @@ public class RandomsetFormula extends FormulasAbstract {
 	}
 	
 	@Override
-	public String getValue() {
-		int id = rnd.nextInt(array.length);
+	public String getFormulaValue() {				
+		int id = rnd.nextInt(array.length);		
 		return array[id].replace("'", "").trim();
 	}
 }

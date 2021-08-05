@@ -27,6 +27,7 @@ import ru.kids.copier.exceptions.GenerateValueException;
 import ru.kids.copier.exceptions.InitGeneratorValueException;
 import ru.kids.copier.formulas.FormulasAbstract;
 import ru.kids.copier.formulas.StringConstantFormula;
+import ru.kids.copier.process.Cliche.FormulaPropertis;
 import ru.kids.copier.ui.ProgressDialog;
 import ru.kids.copier.xml.ClicheParser;
 
@@ -62,7 +63,7 @@ public class FilesProcess {
 			Cliche cliche = ClicheParser.parse(file);
 
 			logger.info("Initializing cliche formulas");
-			Map<String, Map<String, Boolean>> calcFormulas = cliche.getCalcFormulas();
+			Map<String, Map<String, FormulaPropertis>> calcFormulas = cliche.getCalcFormulas();
 			Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
 
 			pd.setSecondBarSize(cliche.getAmountCopyes());
@@ -94,27 +95,37 @@ public class FilesProcess {
 
 	private void processFillCopyes(Cliche cliche, Map<String, FormulasAbstract> formulasValues, File file)
 			throws GenerateValueException, CanselException {
+		Map<String,String> notLoopValues = new HashMap<String, String>();
 		for (int i = 0; i < cliche.getAmountCopyes(); i++) {
 			String xml = cliche.getMainText();
 			String outFileName = cliche.getFileNameMask();
 
 			StringBuilder outXml = new StringBuilder();
 			StringBuilder keyName = new StringBuilder();
+			String value = "";
 
 			for (char ch : xml.toCharArray()) {
 				if (pd.isCanseled())
 					throw new CanselException();
-				if (ch == '}' && !keyName.isEmpty()) {
+				if (ch == '}' && !keyName.toString().isEmpty()) {
 					keyName.append(ch);
-					String value = keyName.toString();
-					if (formulasValues.containsKey(value))
-						value = formulasValues.get(value).getValue();
+					String key = keyName.toString();
+					if (formulasValues.containsKey(key)) {
+						FormulasAbstract formula = formulasValues.get(key);
+						if(!formula.isLoop() && notLoopValues.containsKey(key)) 
+							value = notLoopValues.get(key);
+						else {
+							value = formula.getValue();
+							if(!formula.isLoop())
+								notLoopValues.put(key, value);
+						}
+					}
 
 					if (!cliche.getXmlVersion().isEmpty())
 						value = StringEscapeUtils.escapeXml(value);
 					outXml.append(value);
 					keyName = new StringBuilder();
-				} else if (ch == '$' || !keyName.isEmpty()) {
+				} else if (ch == '$' || !keyName.toString().isEmpty()) {
 					keyName.append(ch);
 				} else
 					outXml.append(ch);
@@ -124,15 +135,23 @@ public class FilesProcess {
 			for (char ch : outFileName.toCharArray()) {
 				if (pd.isCanseled())
 					throw new CanselException();
-				if (ch == '}' && !keyName.isEmpty()) {
+				if (ch == '}' && !keyName.toString().isEmpty()) {
 					keyName.append(ch);
-					String value = keyName.toString();
-					if (formulasValues.containsKey(value))
-						value = formulasValues.get(value).getValue();
-
+					String key = keyName.toString();
+					if (formulasValues.containsKey(key)) {
+						FormulasAbstract formula = formulasValues.get(key);
+						if(!formula.isLoop() && notLoopValues.containsKey(key)) 
+							value = notLoopValues.get(key);
+						else {
+							value = formula.getValue();
+							if(!formula.isLoop())
+								notLoopValues.put(key, value);
+						}
+					}
+					
 					outFileNameNew.append(value);
 					keyName = new StringBuilder();
-				} else if (ch == '$' || !keyName.isEmpty()) {
+				} else if (ch == '$' || !keyName.toString().isEmpty()) {
 					keyName.append(ch);
 				} else
 					outFileNameNew.append(ch);
@@ -142,6 +161,7 @@ public class FilesProcess {
 
 			logger.info("Creating file " + outFileNameNew.toString());
 			pd.setSecondBarIncValue();
+			notLoopValues.clear();
 		}
 	}
 
@@ -162,18 +182,19 @@ public class FilesProcess {
 		}
 	}
 
-	private Map<String, FormulasAbstract> initFormulas(Map<String, Map<String, Boolean>> calcFormulas)
+	private Map<String, FormulasAbstract> initFormulas(Map<String, Map<String, FormulaPropertis>> calcFormulas)
 			throws ActivateException, InitGeneratorValueException {
 		Map<String, FormulasAbstract> result = new HashMap<>(calcFormulas.size());
 
 		pd.setSecondBarSize(calcFormulas.size());
 		pd.setSecondLabelText("Preparing formulas");
-		for (Entry<String, Map<String, Boolean>> entry : calcFormulas.entrySet()) {
+		for (Entry<String, Map<String, FormulaPropertis>> entry : calcFormulas.entrySet()) {
 			String key = entry.getKey();
-			Map<String, Boolean> map = entry.getValue();
-			Entry<String, Boolean> val = map.entrySet().iterator().next();
+			Map<String, FormulaPropertis> map = entry.getValue();
+			Entry<String, FormulaPropertis> val = map.entrySet().iterator().next();
 			String formula = val.getKey();
-			boolean isLoop = val.getValue();
+			boolean isLoop = val.getValue().isLoop();
+			boolean isUnique = val.getValue().isUnique();
 			FormulasAbstract fomulaClass = null;
 			String arguments = formula;
 			if (formula.contains("(")) {
@@ -195,7 +216,7 @@ public class FilesProcess {
 			} else
 				fomulaClass = new StringConstantFormula();
 
-			fomulaClass.init(arguments, isLoop);
+			fomulaClass.init(arguments, isLoop, isUnique);
 			result.put("${" + key + "}", fomulaClass);
 			pd.setSecondBarIncValue();
 		}

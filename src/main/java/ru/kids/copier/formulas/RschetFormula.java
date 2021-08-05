@@ -11,7 +11,6 @@ import ru.kids.copier.exceptions.InitGeneratorValueException;
 public class RschetFormula extends FormulasAbstract {
 
 	private static final Random rnd = new Random();
-	private StringBuilder rschet;
 	private int nomPor = 1;
 	private static final String[] kodVals = new String[] { "008", "012", "032", "036", "044", "048", "050", "051",
 			"052", "060", "064", "068", "072", "084", "090", "096", "104", "108", "116", "124", "132", "136", "144",
@@ -30,9 +29,39 @@ public class RschetFormula extends FormulasAbstract {
 			"706-708", "801-855", "909-971" };
 	private static List<String> fCodes = new ArrayList<>();
 
+	private String kodval = "";
+	private String firstR = "";
+	private String secondR = "";
+	private String nomFil = "";
+
+	private boolean isNomFil = false;
+	private boolean isSecondR = false;
+	private boolean isFirstR = false;
+	private boolean isKodVal = false;
+
 	@Override
-	public String getValue() {
-		StringBuilder result = new StringBuilder(rschet).append(StringUtils.leftPad((nomPor++) + "", 7, '0'));
+	public String getFormulaValue() {
+		if(!isNomFil)
+			nomFil = StringUtils.leftPad(rnd.nextInt(10000) + "", 4, '0');
+
+		if(!isSecondR)
+			secondR = StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
+
+		if(!isFirstR) {
+			if (fCodes.isEmpty())
+				generateFCodes();
+			firstR = fCodes.get(rnd.nextInt(fCodes.size()));
+		}
+
+		if(!isKodVal)
+			kodval = kodVals[rnd.nextInt(kodVals.length)];
+		
+		StringBuilder result = new StringBuilder(firstR);
+		result.append(secondR);
+		result.append(kodval);
+		result.append(0);
+		result.append(nomFil);
+		result.append(StringUtils.leftPad((nomPor++) + "", 7, '0'));
 
 		int checkSumm = 0;
 		for (int i = 0; i < result.length(); i++) {
@@ -43,51 +72,39 @@ public class RschetFormula extends FormulasAbstract {
 
 		checkSumm = ((checkSumm % 10) * 3) % 10;
 		result.replace(8, 9, checkSumm + "");
+		
 		return result.toString();
 	}
 
 	@Override
 	public void init(String formulaArgs) throws InitGeneratorValueException {
-		String kodval;
-		String firstR;
-		String secondR;
-		String nomFil;
 		String[] args = formulaArgs.isEmpty() ? new String[] {} : formulaArgs.split(",");
-
-		if (args.length > 0)
-			kodval = args[0].trim().replace("'", "");
-		else
-			kodval = kodVals[rnd.nextInt(kodVals.length)];
-
-		if (args.length > 1)
-			firstR = args[1].trim().replace("'", "");
-		else {
-			if (fCodes.isEmpty())
-				generateFCodes();
-			firstR = fCodes.get(rnd.nextInt(fCodes.size()));
-		}
-
-		if (args.length > 2)
-			secondR = args[2].trim().replace("'", "");
-		else
-			secondR = StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
-
-		if (args.length > 3)
-			nomFil = StringUtils.leftPad(args[3].trim().replace("'", ""), 4, '0');
-		else
-			nomFil = StringUtils.leftPad(rnd.nextInt(10000) + "", 4, '0');
-
-		if (args.length > 4)
-			nomPor = Integer.parseInt(args[4].trim().replace("'", ""));
 
 		if (args.length > 5)
 			throw new InitGeneratorValueException("Incorrect number of arguments.");
 		
-		rschet = new StringBuilder(firstR);
-		rschet.append(secondR);
-		rschet.append(kodval);
-		rschet.append(0);
-		rschet.append(nomFil);
+		if (args.length > 0) {
+			kodval = args[0].trim().replace("'", "");
+			isKodVal = true;
+		}
+
+		if (args.length > 1) {
+			firstR = args[1].trim().replace("'", "");
+			isFirstR = true;
+		}
+
+		if (args.length > 2) {
+			secondR = args[2].trim().replace("'", "");
+			isSecondR = true;
+		}
+
+		if (args.length > 3) {
+			nomFil = StringUtils.leftPad(args[3].trim().replace("'", ""), 4, '0');
+			isNomFil = true;
+		}
+		
+		if (args.length > 4)
+			nomPor = Integer.parseInt(args[4].trim().replace("'", ""));
 	}
 
 	private void generateFCodes() {

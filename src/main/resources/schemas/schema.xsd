@@ -72,6 +72,11 @@
 					<xs:documentation>Получать новое значение для каждого вхождения формулы в файле</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
+			<xs:attribute name="isUnique" type="xs:boolean" default="false">
+				<xs:annotation>
+					<xs:documentation>Получать уникальные значения</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
 			<xs:attribute name="formula" type="xs:string" use="required">
 				<xs:annotation>
 					<xs:documentation>Функция формулы</xs:documentation>

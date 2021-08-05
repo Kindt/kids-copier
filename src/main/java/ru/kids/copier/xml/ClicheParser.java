@@ -36,10 +36,13 @@ public class ClicheParser {
 								Attribute nameAttr = startElement.getAttributeByName(new QName("name"));
 								Attribute formulaAttr = startElement.getAttributeByName(new QName("formula"));
 								Attribute isLoopAttr = startElement.getAttributeByName(new QName("isLoop"));
+								Attribute isUniqueAttr = startElement.getAttributeByName(new QName("isUnique"));
 								if (nameAttr != null && formulaAttr != null) {
 									boolean isLoop = isLoopAttr == null ? false
 											: Boolean.parseBoolean(isLoopAttr.getValue());
-									cliche.putCalcFormulas(nameAttr.getValue(), formulaAttr.getValue(), isLoop);
+									boolean isUnique = isUniqueAttr == null ? false
+											: Boolean.parseBoolean(isUniqueAttr.getValue());
+									cliche.putCalcFormulas(nameAttr.getValue(), formulaAttr.getValue(), isLoop, isUnique);
 								}
 								break;
 							case ("loopText"):

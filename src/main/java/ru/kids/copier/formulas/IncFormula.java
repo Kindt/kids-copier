@@ -8,8 +8,8 @@ public class IncFormula extends FormulasAbstract {
 	protected int val = 0;
 
 	@Override
-	public String getValue() {
-		val += step;
+	public String getFormulaValue() {		
+		val += step;		
 		return val + "";
 	}
 

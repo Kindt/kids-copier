@@ -11,12 +11,21 @@ public class KppFormula extends InnFormula {
 	private int sdvig = 0;
 	private static final String[] corractFirstParameterValue = new String[] { "ul", "inul", "" };
 
+	private boolean isKodNO = false;
+	
 	@Override
-	public String getValue() {
+	public String getFormulaValue() {		
+		if(!isKodNO)
+			kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
+		
+		if (kodNO.length() == 2)
+			kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
+		
 		StringBuilder result = new StringBuilder(kodNO);
 
 		result.append(StringUtils.leftPad((rnd.nextInt(49) + 1 + sdvig) + "", 2, '0'));
 		result.append(StringUtils.leftPad(rnd.nextInt(1000) + "", 3, '0'));
+				
 		return result.toString();
 	}
 
@@ -34,12 +43,9 @@ public class KppFormula extends InnFormula {
 		if ("inul".equalsIgnoreCase(type))
 			sdvig = 50;
 		
-		if (args.length > 1)
+		if (args.length > 1) {
 			kodNO = args[1].trim().replace("'", "");
-		else
-			kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
-		
-		if (kodNO.length() == 2)
-			kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
+			isKodNO = true;
+		}
 	}
 }

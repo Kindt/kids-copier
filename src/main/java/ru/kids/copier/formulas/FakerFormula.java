@@ -1,7 +1,6 @@
 package ru.kids.copier.formulas;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -57,8 +56,8 @@ public class FakerFormula extends FormulasAbstract {
 	}
 
 	@Override
-	public String getValue() throws GenerateValueException {
-
+	public String getFormulaValue() throws GenerateValueException {
+		
 		String result = "";
 
 		try {
@@ -85,6 +84,7 @@ public class FakerFormula extends FormulasAbstract {
 			e.printStackTrace();
 			throw new GenerateValueException("Error when forming the function value faker(" + formulaArgs + ")");
 		}
+		
 		return result;
 	}
 

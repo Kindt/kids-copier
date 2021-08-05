@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 public class Cliche {
-	private Map<String, Map<String, Boolean>> calcFormulas = new HashMap<>();
+	private Map<String, Map<String, FormulaPropertis>> calcFormulas = new HashMap<>();
 	private String fileNameMask = "";
 	private int amountCopyes = 10;
 	private String mainText = "";
@@ -15,13 +15,13 @@ public class Cliche {
 	private String encoding = "UTF-8";
 	private String xmlVersion = "";
 
-	public Map<String, Map<String, Boolean>> getCalcFormulas() {
+	public Map<String, Map<String, FormulaPropertis>> getCalcFormulas() {
 		return calcFormulas;
 	}
 
-	public void putCalcFormulas(String name, String formula, boolean isLoop) {
-		Map<String, Boolean> map = new HashMap<>();
-		map.put(formula, isLoop);
+	public void putCalcFormulas(String name, String formula, boolean isLoop, boolean isUnique) {
+		Map<String, FormulaPropertis> map = new HashMap<>();
+		map.put(formula, new FormulaPropertis(isLoop, isUnique));
 		this.calcFormulas.put(name, map);
 	}
 
@@ -109,6 +109,24 @@ public class Cliche {
 
 		public String getText() {
 			return text;
+		}
+	}
+
+	public class FormulaPropertis {
+		private boolean isLoop = false;
+		private boolean isUnique = false;
+
+		public FormulaPropertis(boolean isLoop, boolean isUnique) {
+			this.isLoop = isLoop;
+			this.isUnique = isUnique;
+		}
+
+		public boolean isLoop() {
+			return isLoop;
+		}
+
+		public boolean isUnique() {
+			return isUnique;
 		}
 	}
 }
