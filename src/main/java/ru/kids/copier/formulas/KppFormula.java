@@ -14,7 +14,7 @@ public class KppFormula extends InnFormula {
 	private boolean isKodNO = false;
 	
 	@Override
-	public String getFormulaValue() {		
+	protected String getFormulaValue() {		
 		if(!isKodNO)
 			kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
 		

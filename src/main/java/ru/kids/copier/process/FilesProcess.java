@@ -216,7 +216,7 @@ public class FilesProcess {
 			} else
 				fomulaClass = new StringConstantFormula();
 
-			fomulaClass.init(arguments, isLoop, isUnique);
+			fomulaClass.init(formula, arguments, isLoop, isUnique);
 			result.put("${" + key + "}", fomulaClass);
 			pd.setSecondBarIncValue();
 		}

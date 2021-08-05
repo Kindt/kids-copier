@@ -56,7 +56,7 @@ public class FakerFormula extends FormulasAbstract {
 	}
 
 	@Override
-	public String getFormulaValue() throws GenerateValueException {
+	protected String getFormulaValue() throws GenerateValueException {
 		
 		String result = "";
 

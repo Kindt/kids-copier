@@ -55,7 +55,7 @@ public class InnFormula extends FormulasAbstract {
 	}
 
 	@Override
-	public String getFormulaValue() {		
+	protected String getFormulaValue() {		
 		if (!isKodNO)
 			kodNO = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
 

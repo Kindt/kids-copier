@@ -40,7 +40,7 @@ public class RschetFormula extends FormulasAbstract {
 	private boolean isKodVal = false;
 
 	@Override
-	public String getFormulaValue() {
+	protected String getFormulaValue() {
 		if(!isNomFil)
 			nomFil = StringUtils.leftPad(rnd.nextInt(10000) + "", 4, '0');
 

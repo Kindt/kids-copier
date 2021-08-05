@@ -23,10 +23,10 @@ public class OgrnulFormula extends InnFormula {
 	private String year = "";
 	private String okatoCode = "";
 
-	protected List<String> firstChars = new ArrayList<String>();
+	protected List<String> firstChars = new ArrayList<>();
 
 	@Override
-	public String getFormulaValue() {
+	protected String getFormulaValue() {
 		
 		if (!isFirstChar)
 			firstChar = firstChars.get(rnd.nextInt(firstChars.size()));
@@ -89,7 +89,9 @@ public class OgrnulFormula extends InnFormula {
 	}
 
 	protected void initFirstChars() {
-		firstChars.add("1");
-		firstChars.add("5");
+		if(firstChars.isEmpty()) {
+			firstChars.add("1");
+			firstChars.add("5");
+		}
 	}
 }

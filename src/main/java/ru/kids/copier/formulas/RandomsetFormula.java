@@ -14,10 +14,12 @@ public class RandomsetFormula extends FormulasAbstract {
 		array = formulaArgs.split(",");
 		if (array.length < 2)
 			throw new InitGeneratorValueException("Incorrect number of arguments.");
+		
+		maxFindUniqueValue = array.length;
 	}
 	
 	@Override
-	public String getFormulaValue() {				
+	protected String getFormulaValue() {				
 		int id = rnd.nextInt(array.length);		
 		return array[id].replace("'", "").trim();
 	}

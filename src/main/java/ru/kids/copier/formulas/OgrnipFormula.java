@@ -14,6 +14,7 @@ public class OgrnipFormula extends OgrnulFormula {
 	
 	@Override
 	protected void initFirstChars() {
-		firstChars.add("3");
+		if(firstChars.isEmpty()) 
+			firstChars.add("3");
 	}
 }
