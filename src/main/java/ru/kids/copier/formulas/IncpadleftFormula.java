@@ -19,7 +19,7 @@ public class IncpadleftFormula extends IncFormula {
 		super.init(formulaArgs);
 		String[] args = formulaArgs.split(",");
 
-		if(args.length > 4)
+		if (args.length > 4)
 			throw new InitGeneratorValueException("Incorrect number of arguments.");
 		size = Integer.parseInt(args[2].trim());
 		ch = args[3].trim().replace("'", "").charAt(0);

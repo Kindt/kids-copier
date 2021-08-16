@@ -21,7 +21,7 @@ import javax.swing.SwingWorker;
 public class ProgressDialog extends JDialog implements PropertyChangeListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -8051957748575317184L;
 
@@ -136,7 +136,7 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 				dispose();
 			}
 	}
-	
+
 	public boolean isCanseled() {
 		return worker.isCancelled();
 	}

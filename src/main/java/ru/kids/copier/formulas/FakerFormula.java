@@ -27,8 +27,9 @@ public class FakerFormula extends FormulasAbstract {
 	public void init(String formulaArgs) throws ActivateException {
 		this.formulaArgs = formulaArgs;
 		args = formulaArgs.trim().split(",");
-		String firstPatchClass = args[0].trim().contains("(")? args[0].trim().substring(0, args[0].trim().indexOf("(")): args[0].trim();
-		
+		String firstPatchClass = args[0].trim().contains("(") ? args[0].trim().substring(0, args[0].trim().indexOf("("))
+				: args[0].trim();
+
 		String[] args1 = firstPatchClass.split("\\.");
 		Class<?> findClass = f.getClass();
 
@@ -38,7 +39,7 @@ public class FakerFormula extends FormulasAbstract {
 
 			String function = args1[args1.length - 1];
 			String arguments = "";
-			if (args[0].trim().contains("(")) 
+			if (args[0].trim().contains("("))
 				arguments = args[0].trim().substring(args[0].trim().indexOf("(") + 1, args[0].trim().lastIndexOf(")"));
 
 			argumentsArr = arguments.isEmpty() ? new String[] {} : arguments.trim().split(";");
@@ -57,7 +58,7 @@ public class FakerFormula extends FormulasAbstract {
 
 	@Override
 	protected String getFormulaValue() throws GenerateValueException {
-		
+
 		String result = "";
 
 		try {
@@ -84,7 +85,7 @@ public class FakerFormula extends FormulasAbstract {
 			e.printStackTrace();
 			throw new GenerateValueException("Error when forming the function value faker(" + formulaArgs + ")");
 		}
-		
+
 		return result;
 	}
 
@@ -128,14 +129,14 @@ public class FakerFormula extends FormulasAbstract {
 	}
 
 	private Object getTypeValue(String arg) throws NoSuchFieldException, ClassNotFoundException {
-		
+
 		Class<?> findClass = getClass().getClassLoader().loadClass(arg.substring(0, arg.lastIndexOf('.')));
-		
-		if(findClass.isEnum())
-			for(Object enumObject :findClass.getEnumConstants()) 
-				if(enumObject.toString().equalsIgnoreCase(arg.substring(arg.lastIndexOf('.')+1)))
+
+		if (findClass.isEnum())
+			for (Object enumObject : findClass.getEnumConstants())
+				if (enumObject.toString().equalsIgnoreCase(arg.substring(arg.lastIndexOf('.') + 1)))
 					return enumObject;
-				
+
 		return null;
 	}
 }

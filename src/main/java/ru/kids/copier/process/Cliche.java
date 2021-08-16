@@ -60,6 +60,7 @@ public class Cliche {
 	public void putLoopTexts(String name, String text, int copyes) {
 		this.loopTexts.put(name, new LoopText(copyes, text));
 	}
+
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
@@ -75,7 +76,6 @@ public class Cliche {
 	public String getXmlVersion() {
 		return xmlVersion;
 	}
-
 
 	public void prepareXML() {
 		if (!loopTexts.isEmpty()) {

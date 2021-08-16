@@ -42,7 +42,8 @@ public class ClicheParser {
 											: Boolean.parseBoolean(isLoopAttr.getValue());
 									boolean isUnique = isUniqueAttr == null ? false
 											: Boolean.parseBoolean(isUniqueAttr.getValue());
-									cliche.putCalcFormulas(nameAttr.getValue(), formulaAttr.getValue(), isLoop, isUnique);
+									cliche.putCalcFormulas(nameAttr.getValue(), formulaAttr.getValue(), isLoop,
+											isUnique);
 								}
 								break;
 							case ("loopText"):
@@ -50,7 +51,7 @@ public class ClicheParser {
 								Attribute amountCopyesAttr = startElement.getAttributeByName(new QName("amountCopyes"));
 								if (nameAttr != null && amountCopyesAttr != null) {
 									xmlEvent = reader.nextEvent();
-									while(!xmlEvent.isCharacters())
+									while (!xmlEvent.isCharacters())
 										xmlEvent = reader.nextEvent();
 									cliche.putLoopTexts(nameAttr.getValue(), xmlEvent.asCharacters().getData(),
 											Integer.parseInt(amountCopyesAttr.getValue()));
@@ -78,7 +79,7 @@ public class ClicheParser {
 								break;
 							case ("mainText"):
 								xmlEvent = reader.nextEvent();
-								while(!xmlEvent.isCharacters())
+								while (!xmlEvent.isCharacters())
 									xmlEvent = reader.nextEvent();
 								cliche.setMainText(xmlEvent.asCharacters().getData());
 								break;

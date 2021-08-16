@@ -95,7 +95,7 @@ public class FilesProcess {
 
 	private void processFillCopyes(Cliche cliche, Map<String, FormulasAbstract> formulasValues, File file)
 			throws GenerateValueException, CanselException {
-		Map<String,String> notLoopValues = new HashMap<String, String>();
+		Map<String, String> notLoopValues = new HashMap<>();
 		for (int i = 0; i < cliche.getAmountCopyes(); i++) {
 			String xml = cliche.getMainText();
 			String outFileName = cliche.getFileNameMask();
@@ -112,11 +112,11 @@ public class FilesProcess {
 					String key = keyName.toString();
 					if (formulasValues.containsKey(key)) {
 						FormulasAbstract formula = formulasValues.get(key);
-						if(!formula.isLoop() && notLoopValues.containsKey(key)) 
+						if (!formula.isLoop() && notLoopValues.containsKey(key))
 							value = notLoopValues.get(key);
 						else {
 							value = formula.getValue();
-							if(!formula.isLoop())
+							if (!formula.isLoop())
 								notLoopValues.put(key, value);
 						}
 					}
@@ -140,15 +140,15 @@ public class FilesProcess {
 					String key = keyName.toString();
 					if (formulasValues.containsKey(key)) {
 						FormulasAbstract formula = formulasValues.get(key);
-						if(!formula.isLoop() && notLoopValues.containsKey(key)) 
+						if (!formula.isLoop() && notLoopValues.containsKey(key))
 							value = notLoopValues.get(key);
 						else {
 							value = formula.getValue();
-							if(!formula.isLoop())
+							if (!formula.isLoop())
 								notLoopValues.put(key, value);
 						}
 					}
-					
+
 					outFileNameNew.append(value);
 					keyName = new StringBuilder();
 				} else if (ch == '$' || !keyName.toString().isEmpty()) {

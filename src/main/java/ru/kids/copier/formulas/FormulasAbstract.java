@@ -14,10 +14,11 @@ public abstract class FormulasAbstract {
 	protected boolean isUnique = false;
 	protected int maxFindUniqueValue = 10000;
 	protected String formulaAll;
-	
+
 	protected Set<String> values = new HashSet<>();
 
-	public void init(String formulaAll, String formulaArgs, boolean isLoop, boolean isUnique) throws ActivateException, InitGeneratorValueException {
+	public void init(String formulaAll, String formulaArgs, boolean isLoop, boolean isUnique)
+			throws ActivateException, InitGeneratorValueException {
 		this.isLoop = isLoop;
 		this.formulaAll = formulaAll;
 		this.isUnique = isUnique;
@@ -31,26 +32,27 @@ public abstract class FormulasAbstract {
 	}
 
 	public String getValue() throws GenerateValueException {
-		
+
 		String val = getFormulaValue();
 		int count = 0;
-		
-		if(isUnique)
+
+		if (isUnique)
 			while (values.contains(val) && count < maxFindUniqueValue) {
 				val = getFormulaValue();
 				count++;
 			}
-		
+
 		values.add(val);
-		
-		if(count >= maxFindUniqueValue)
-			throw new GenerateValueException("Exceeded the maximum number of attempts to get a unique value ("+maxFindUniqueValue+"). Please correct the formula description. ("+formulaAll+")");
-			
+
+		if (count >= maxFindUniqueValue)
+			throw new GenerateValueException("Exceeded the maximum number of attempts to get a unique value ("
+					+ maxFindUniqueValue + "). Please correct the formula description. (" + formulaAll + ")");
+
 		return val;
 	}
-	
+
 	protected String getFormulaValue() throws GenerateValueException {
 
 		return value;
-	}	
+	}
 }

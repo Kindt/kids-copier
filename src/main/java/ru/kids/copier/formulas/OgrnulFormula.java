@@ -27,27 +27,27 @@ public class OgrnulFormula extends InnFormula {
 
 	@Override
 	protected String getFormulaValue() {
-		
+
 		if (!isFirstChar)
 			firstChar = firstChars.get(rnd.nextInt(firstChars.size()));
-		
+
 		if (!isYear)
 			year = rnd.nextInt(100) + "";
 
 		if (year.length() < 2)
 			year = StringUtils.leftPad(year, 2, '0');
-		
+
 		if (!isRegNum)
 			okatoCode = ocatoCodes[rnd.nextInt(ocatoCodes.length)];
-		
+
 		StringBuilder result = new StringBuilder(firstChar);
 		result.append(year);
 		result.append(okatoCode);
-		
+
 		result.append(StringUtils.leftPad(rnd.nextInt(maxVal) + "", maxZero, '0'));
 
 		result.append((Long.parseLong(result.toString()) % delimiter) % 10);
-		
+
 		return result.toString();
 	}
 
@@ -85,11 +85,11 @@ public class OgrnulFormula extends InnFormula {
 			if (!Arrays.asList(ocatoCodes).contains(okatoCode))
 				throw new InitGeneratorValueException("The OKATO code is set incorrectly.");
 			isRegNum = true;
-		} 
+		}
 	}
 
 	protected void initFirstChars() {
-		if(firstChars.isEmpty()) {
+		if (firstChars.isEmpty()) {
 			firstChars.add("1");
 			firstChars.add("5");
 		}

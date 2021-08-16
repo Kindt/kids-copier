@@ -91,7 +91,9 @@ public class FromxmlFormula extends FormulasAbstract {
 		if (isUnique) {
 			count++;
 			if (count >= qrefValues.size())
-				throw new GenerateValueException("The maximum number of unique values has been exceeded. Please correct the formula description. (" + formulaAll + ")");
+				throw new GenerateValueException(
+						"The maximum number of unique values has been exceeded. Please correct the formula description. ("
+								+ formulaAll + ")");
 
 			val = qrefValues.get(count - 1);
 		} else

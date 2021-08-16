@@ -7,7 +7,7 @@ public class GenerateValueException extends Exception {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

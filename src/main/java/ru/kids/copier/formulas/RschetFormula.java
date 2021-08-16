@@ -41,21 +41,21 @@ public class RschetFormula extends FormulasAbstract {
 
 	@Override
 	protected String getFormulaValue() {
-		if(!isNomFil)
+		if (!isNomFil)
 			nomFil = StringUtils.leftPad(rnd.nextInt(10000) + "", 4, '0');
 
-		if(!isSecondR)
+		if (!isSecondR)
 			secondR = StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
 
-		if(!isFirstR) {
+		if (!isFirstR) {
 			if (fCodes.isEmpty())
 				generateFCodes();
 			firstR = fCodes.get(rnd.nextInt(fCodes.size()));
 		}
 
-		if(!isKodVal)
+		if (!isKodVal)
 			kodval = kodVals[rnd.nextInt(kodVals.length)];
-		
+
 		StringBuilder result = new StringBuilder(firstR);
 		result.append(secondR);
 		result.append(kodval);
@@ -72,7 +72,7 @@ public class RschetFormula extends FormulasAbstract {
 
 		checkSumm = ((checkSumm % 10) * 3) % 10;
 		result.replace(8, 9, checkSumm + "");
-		
+
 		return result.toString();
 	}
 
@@ -82,7 +82,7 @@ public class RschetFormula extends FormulasAbstract {
 
 		if (args.length > 5)
 			throw new InitGeneratorValueException("Incorrect number of arguments.");
-		
+
 		if (args.length > 0) {
 			kodval = args[0].trim().replace("'", "");
 			isKodVal = true;
@@ -102,7 +102,7 @@ public class RschetFormula extends FormulasAbstract {
 			nomFil = StringUtils.leftPad(args[3].trim().replace("'", ""), 4, '0');
 			isNomFil = true;
 		}
-		
+
 		if (args.length > 4)
 			nomPor = Integer.parseInt(args[4].trim().replace("'", ""));
 	}

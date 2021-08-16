@@ -24,9 +24,9 @@ public class FromdirnamesFormula extends FromxmlFormula {
 	}
 
 	private void initQref(File file, boolean isFileOnly) {
-		for(File subFile : file.listFiles()) {
-			if(isFileOnly) {
-				if(subFile.isFile())
+		for (File subFile : file.listFiles()) {
+			if (isFileOnly) {
+				if (subFile.isFile())
 					qrefValues.add(subFile.getName());
 			} else
 				qrefValues.add(subFile.getName());
