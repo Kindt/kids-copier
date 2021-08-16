@@ -145,4 +145,11 @@
 
 		</dependencies>
 	</dependencyManagement>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/kindt/${project.artifactId}</url>
+		</repository>
+	</distributionManagement>
 </project>
