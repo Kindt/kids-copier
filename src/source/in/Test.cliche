@@ -4,9 +4,9 @@
 		<formula name="calcDate"				formula="calcdate(day:1, year:-2, week:4, month:-8, 'yyyy-MM-dd')"/>
 		<formula name="currDate"				formula="currentdate('yyyy-MM-dd')"/>
 		<formula name="currDate1"				formula="currentdate('yyyyMMdd')"/>
-		<formula name="currDateTime"		formula="currentdate('yyyy-MM-dd HH:mm:ss')"/>
+		<formula name="currDateTime"			formula="currentdate('yyyy-MM-dd HH:mm:ss')"/>
 		<formula name="inc"						formula="inc(0,1)"/>
-		<formula name="incpadleft_loop"		formula="incpadleft(0,1,6,'0')" isLoop="true"/>
+		<formula name="incpadleft_loop"			formula="incpadleft(0,1,6,'0')" isLoop="true"/>
 		<formula name="ogrnul"					formula="ogrnul()" isLoop="true"/>
 		<formula name="ogrnul_type"				formula="ogrnul('1')" isLoop="true"/>
 		<formula name="ogrnul_type_year"		formula="ogrnul('1','03')" isLoop="true"/>
@@ -16,32 +16,46 @@
 		<formula name="ogrngos_type_year"		formula="ogrngos('2','03')" isLoop="true"/>
 		<formula name="ogrngos_type_year_reg"	formula="ogrngos('2','03','78')" isLoop="true"/>
 		<formula name="ogrnip"					formula="ogrnip()" isLoop="true"/>
-		<formula name="ogrnip_type"			formula="ogrnip('3')" isLoop="true"/>
-		<formula name="ogrnip_type_year"	formula="ogrnip('3','03')" isLoop="true"/>
+		<formula name="ogrnip_type"				formula="ogrnip('3')" isLoop="true"/>
+		<formula name="ogrnip_type_year"		formula="ogrnip('3','03')" isLoop="true"/>
 		<formula name="ogrnip_type_year_reg"	formula="ogrnip('3','03','78')" isLoop="true"/>
 		<formula name="inn_ul"					formula="inn('ul')" isLoop="true" isUnique="true"/>
 		<formula name="inn_ul_reg"				formula="inn('ul','78')" isLoop="true"/>
-		<formula name="inn_ul_reg_no"		formula="inn('ul','7812')" isLoop="true"/>
+		<formula name="inn_ul_reg_no"			formula="inn('ul','7812')" isLoop="true"/>
 		<formula name="inn_fl"					formula="inn('fl')" isLoop="true"/>
 		<formula name="inn_fl_reg"				formula="inn('fl','78')" isLoop="true"/>
-		<formula name="inn_fl_reg_no"		formula="inn('fl','7812')" isLoop="true"/>
+		<formula name="inn_fl_reg_no"			formula="inn('fl','7812')" isLoop="true"/>
 		<formula name="inn_inul"				formula="inn('inul')" isLoop="true"/>
 		<formula name="kpp_def"					formula="kpp()" isLoop="true"/>
 		<formula name="kpp_ul"					formula="kpp('ul')" isLoop="true"/>
-		<formula name="kpp_ul_kodno"		formula="kpp('ul','7812')" isLoop="true"/>
+		<formula name="kpp_ul_kodno"			formula="kpp('ul','7812')" isLoop="true"/>
 		<formula name="kpp_inul"				formula="kpp('inul')" isLoop="true"/>
-		<formula name="schet"						formula="rschet()" isLoop="true"/>
+		<formula name="schet"					formula="rschet()" isLoop="true"/>
 		<formula name="schet_kodval"			formula="rschet('810')" isLoop="true"/>
-		<formula name="schet_kodval_firstP"	formula="rschet('810','103')" isLoop="true"/>
+		<formula name="schet_kodval_firstP"		formula="rschet('810','103')" isLoop="true"/>
 		<formula name="schet_kodval_firstP_secondP" formula="rschet('810','103','22')" isLoop="true"/>
 		<formula name="schet_kodval_firstP_secondP_nombank" formula="rschet('810','103','22','2880')" isLoop="true"/>
 		<formula name="schet_kodval_firstP_secondP_nombank_pornomstart" formula="rschet('810','103','22','2880','38')" isLoop="true"/>
 		<formula name="randomset"				formula="randomset('fl','7812','random text','16489')" isLoop="true"/>
 		<formula name="faker_date_betvin_years_old"	formula="faker(date.birthday(18;65), 'yyyy-MM-dd')" isLoop="true"/>
 		<formula name="faker_dune_character"	formula="faker(dune.character)" isLoop="true"/>
-		<formula name="faker_phone"			formula="faker(phoneNumber.phoneNumber)" isLoop="true"/>
-		<formula name="faker_visa_card"		formula="faker(finance.creditCard(com.github.javafaker.CreditCardType.VISA))" isLoop="true"/>
-		<formula name="faker_date_future"	formula="faker(date.future(10; java.util.concurrent.TimeUnit.MINUTES), 'yyyy-MM-dd HH:mm:ss')"/>
+		<formula name="faker_phone"				formula="faker(phoneNumber.phoneNumber)" isLoop="true"/>
+		<formula name="faker_visa_card"			formula="faker(finance.creditCard(com.github.javafaker.CreditCardType.VISA))" isLoop="true"/>
+		<formula name="faker_date_future"		formula="faker(date.future(10; java.util.concurrent.TimeUnit.MINUTES), 'yyyy-MM-dd HH:mm:ss')"/>
+		<formula name="from_xml"				formula="fromxml('qrefs/test1.xml', 'testTag')" isLoop="true" isUnique="true"/>
+		<formula name="from_xml_attr"			formula="fromxml('qrefs/test2.xml', 'testTag', 'testAttr')" isLoop="true" isUnique="true"/>
+		<formula name="count_from_xml"			formula="countfromxml('qrefs/test1.xml', 'testTag')"/>
+		<formula name="count_from_xml_attr"		formula="countfromxml('qrefs/test2.xml', 'testTag', 'testAttr')"/>
+		<formula name="from_txt"				formula="fromtxt('qrefs/test.txt')" isLoop="true" isUnique="true"/>
+		<formula name="count_from_txt"			formula="countfromtxt('qrefs/test.txt')"/>
+		<formula name="from_json"				formula="fromjson('qrefs/test.json', 'id')" isLoop="true" isUnique="true"/>
+		<formula name="count_from_json"			formula="countfromjson('qrefs/test.json', 'id')"/>
+		<formula name="from_csv"				formula="fromcsv('qrefs/test.csv', 2, '\,', '&quot;', 0)" isLoop="true"/>
+		<formula name="count_from_csv"			formula="countfromcsv('qrefs/test.csv', 2, '\,', '&quot;', 0)"/>
+		<formula name="from_dir_names"			formula="fromdirnames('qrefs', true)" isLoop="true"/>
+		<formula name="count_from_dir_names"	formula="countfromdirnames('qrefs', true)"/>
+		<formula name="from_dir_names1"			formula="fromdirnames('qrefs', false)" isLoop="true"/>
+		<formula name="count_from_dir_names1"	formula="countfromdirnames('qrefs', false)"/>
 	</formulas>
 	<loopTexts>
 		<loopText name="loopXML" amountCopyes="20">
@@ -86,7 +100,21 @@
 		<element faker_dune_character="${faker_dune_character}"/>	
 		<element faker_phone="${faker_phone}"/>	
 		<element faker_visa_card="${faker_visa_card}"/>			
-		<element faker_date_future="${faker_date_future}"/>		
+		<element faker_date_future="${faker_date_future}"/>	
+		<element from_xml="${from_xml}"/>	
+		<element from_xml_attr="${from_xml_attr}"/>	
+		<element count_from_xml="${count_from_xml}"/>	
+		<element count_from_xml_attr="${count_from_xml_attr}"/>	
+		<element from_txt="${from_txt}"/>	
+		<element count_from_txt="${count_from_txt}"/>	
+		<element from_json="${from_json}"/>	
+		<element count_from_json="${count_from_json}"/>	
+		<element from_csv="${from_csv}"/>	
+		<element count_from_csv="${count_from_csv}"/>	
+		<element from_dir_names="${from_dir_names}"/>	
+		<element count_from_dir_names="${count_from_dir_names}"/>	
+		<element from_dir_names1="${from_dir_names1}"/>	
+		<element count_from_dir_names1="${count_from_dir_names1}"/>		
 	</loopXML> ]]></loopText>
 		<loopText name="loopText" amountCopyes="100"><![CDATA[ some kind of repetitive text]]></loopText>
 	</loopTexts>
@@ -139,6 +167,20 @@
 	<element faker_visa_card="${faker_visa_card}"/>		
 	<element faker_date_future="${faker_date_future}"/>	
 	<element loopText="${loopText}"/>	
+	<element from_xml="${from_xml}"/>	
+	<element from_xml_attr="${from_xml_attr}"/>	
+	<element count_from_xml="${count_from_xml}"/>	
+	<element count_from_xml_attr="${count_from_xml_attr}"/>
+	<element from_txt="${from_txt}"/>	
+	<element count_from_txt="${count_from_txt}"/>
+	<element from_json="${from_json}"/>	
+	<element count_from_json="${count_from_json}"/>	
+	<element from_csv="${from_csv}"/>	
+	<element count_from_csv="${count_from_csv}"/>	
+	<element from_dir_names="${from_dir_names}"/>	
+	<element count_from_dir_names="${count_from_dir_names}"/>	
+	<element from_dir_names1="${from_dir_names1}"/>	
+	<element count_from_dir_names1="${count_from_dir_names1}"/>	
 	${loopXML}
 </root>
 		]]></mainText>

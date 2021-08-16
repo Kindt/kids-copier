@@ -36,6 +36,13 @@
 				<include>**</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>src/source/qrefs</directory>
+			<outputDirectory>kid-copier/qrefs</outputDirectory>
+			<includes>				
+				<include>**</include>
+			</includes>
+		</fileSet>
 	</fileSets>
 	<files>
 		<file>
