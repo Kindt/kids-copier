@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.kids.copier</groupId>
-	<artifactId>kid-copier</artifactId>
+	<artifactId>kids-copier</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Копирование КИД-ов по заданным шаблонам</description>
 	<build>
