@@ -46,6 +46,9 @@ public class KppFormula extends InnFormula {
 		if (args.length > 1) {
 			kodNO = args[1].trim().replace("'", "");
 			isKodNO = true;
+
+			if (kodNO.length() == 2)
+				kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
 		}
 	}
 }

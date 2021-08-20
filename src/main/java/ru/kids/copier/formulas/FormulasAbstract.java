@@ -36,13 +36,14 @@ public abstract class FormulasAbstract {
 		String val = getFormulaValue();
 		int count = 0;
 
-		if (isUnique)
+		if (isUnique) {
 			while (values.contains(val) && count < maxFindUniqueValue) {
 				val = getFormulaValue();
 				count++;
 			}
 
-		values.add(val);
+			values.add(val);
+		}
 
 		if (count >= maxFindUniqueValue)
 			throw new GenerateValueException("Exceeded the maximum number of attempts to get a unique value ("

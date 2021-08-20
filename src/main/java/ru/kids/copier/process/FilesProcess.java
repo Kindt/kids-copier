@@ -31,13 +31,14 @@ import ru.kids.copier.process.Cliche.FormulaPropertis;
 import ru.kids.copier.ui.ProgressDialog;
 import ru.kids.copier.xml.ClicheParser;
 
-@SuppressWarnings("deprecation")
 public class FilesProcess {
 
 	private static final Logger logger = LogManager.getRootLogger();
 	private File[] fArray;
 	private File outFolder;
 	private ProgressDialog pd;
+
+	private Map<String, String> notLoopValues = new HashMap<>();
 
 	public FilesProcess(File[] fArray, File outFolder, ProgressDialog pd) {
 		this.fArray = fArray;
@@ -51,7 +52,7 @@ public class FilesProcess {
 		pd.setFirstBarSize(fArray.length);
 		for (File file : fArray) {
 
-			logger.info("Getting started with the cliche file: " + file.getName());
+			logger.info("Getting started with the cliche file: {}", file.getName());
 			if (pd.isCanseled())
 				throw new CanselException();
 
@@ -63,8 +64,7 @@ public class FilesProcess {
 			Cliche cliche = ClicheParser.parse(file);
 
 			logger.info("Initializing cliche formulas");
-			Map<String, Map<String, FormulaPropertis>> calcFormulas = cliche.getCalcFormulas();
-			Map<String, FormulasAbstract> formulasValues = initFormulas(calcFormulas);
+			Map<String, FormulasAbstract> formulasValues = initFormulas(cliche.getCalcFormulas());
 
 			pd.setSecondBarSize(cliche.getAmountCopyes());
 			pd.setSecondLabelText("The process of creating copies.");
@@ -72,11 +72,10 @@ public class FilesProcess {
 			logger.info("Creating copies of files");
 			processFillCopyes(cliche, formulasValues, file);
 
-			calcFormulas.clear();
 			formulasValues.clear();
 			pd.setFirstBarIncValue();
 
-			logger.info("End of working with the cliche file: " + file.getName());
+			logger.info("End of working with the cliche file: {}", file.getName());
 		}
 	}
 
@@ -95,88 +94,75 @@ public class FilesProcess {
 
 	private void processFillCopyes(Cliche cliche, Map<String, FormulasAbstract> formulasValues, File file)
 			throws GenerateValueException, CanselException {
-		Map<String, String> notLoopValues = new HashMap<>();
-		for (int i = 0; i < cliche.getAmountCopyes(); i++) {
-			String xml = cliche.getMainText();
-			String outFileName = cliche.getFileNameMask();
+		char[] xml = cliche.getMainText().toCharArray();
+		char[] outFileName = cliche.getFileNameMask().toCharArray();
 
-			StringBuilder outXml = new StringBuilder();
-			StringBuilder keyName = new StringBuilder();
-			String value = "";
-
-			for (char ch : xml.toCharArray()) {
-				if (pd.isCanseled())
-					throw new CanselException();
-				if (ch == '}' && !keyName.toString().isEmpty()) {
-					keyName.append(ch);
-					String key = keyName.toString();
-					if (formulasValues.containsKey(key)) {
-						FormulasAbstract formula = formulasValues.get(key);
-						if (!formula.isLoop() && notLoopValues.containsKey(key))
-							value = notLoopValues.get(key);
-						else {
-							value = formula.getValue();
-							if (!formula.isLoop())
-								notLoopValues.put(key, value);
-						}
-					}
-
-					if (!cliche.getXmlVersion().isEmpty())
-						value = StringEscapeUtils.escapeXml(value);
-					outXml.append(value);
-					keyName = new StringBuilder();
-				} else if (ch == '$' || !keyName.toString().isEmpty()) {
-					keyName.append(ch);
-				} else
-					outXml.append(ch);
-			}
-
-			StringBuilder outFileNameNew = new StringBuilder();
-			for (char ch : outFileName.toCharArray()) {
-				if (pd.isCanseled())
-					throw new CanselException();
-				if (ch == '}' && !keyName.toString().isEmpty()) {
-					keyName.append(ch);
-					String key = keyName.toString();
-					if (formulasValues.containsKey(key)) {
-						FormulasAbstract formula = formulasValues.get(key);
-						if (!formula.isLoop() && notLoopValues.containsKey(key))
-							value = notLoopValues.get(key);
-						else {
-							value = formula.getValue();
-							if (!formula.isLoop())
-								notLoopValues.put(key, value);
-						}
-					}
-
-					outFileNameNew.append(value);
-					keyName = new StringBuilder();
-				} else if (ch == '$' || !keyName.toString().isEmpty()) {
-					keyName.append(ch);
-				} else
-					outFileNameNew.append(ch);
-			}
-
-			createOutFile(cliche, file, outFileNameNew.toString(), outXml.toString());
-
-			logger.info("Creating file " + outFileNameNew.toString());
-			pd.setSecondBarIncValue();
-			notLoopValues.clear();
-		}
-	}
-
-	private void createOutFile(Cliche cliche, File file, String outFileName, String xml) {
 		File realOutFolder = cliche.getToSubFolder()
 				? new File(outFolder, file.getName().substring(0, file.getName().lastIndexOf(".")))
 				: outFolder;
 		if (!realOutFolder.exists())
 			realOutFolder.mkdirs();
+
+		for (int i = 0; i < cliche.getAmountCopyes(); i++) {
+			String resultText = processInsertsValues(xml, formulasValues, !cliche.getXmlVersion().isEmpty());
+			String outFileNameNewStr = processInsertsValues(outFileName, formulasValues, false);
+
+			createOutFile(cliche, realOutFolder, outFileNameNewStr, resultText);
+
+			logger.info("Creating file {}", outFileNameNewStr);
+			pd.setSecondBarIncValue();
+			notLoopValues.clear();
+		}
+	}
+
+	private String processInsertsValues(char[] chars, Map<String, FormulasAbstract> formulasValues, boolean isXML)
+			throws CanselException, GenerateValueException {
+		StringBuilder result = new StringBuilder();
+		StringBuilder keyName = new StringBuilder();
+
+		String value = "";
+
+		for (char ch : chars) {
+			if (pd.isCanseled())
+				throw new CanselException();
+			if (ch == '}' && !keyName.toString().isEmpty()) {
+				keyName.append(ch);
+				String key = keyName.toString();
+				if (formulasValues.containsKey(key)) {
+					FormulasAbstract formula = formulasValues.get(key);
+					if (!formula.isLoop() && notLoopValues.containsKey(key))
+						value = notLoopValues.get(key);
+					else {
+						value = formula.getValue();
+						if (!formula.isLoop())
+							notLoopValues.put(key, value);
+					}
+				}
+
+				if (isXML)
+					value = StringEscapeUtils.escapeXml10(value);
+
+				result.append(value);
+				keyName.setLength(0);
+			} else {
+				if (ch == '$' || !keyName.toString().isEmpty()) {
+					keyName.append(ch);
+				} else
+					result.append(ch);
+			}
+		}
+		return result.toString();
+	}
+
+	private void createOutFile(Cliche cliche, File realOutFolder, String outFileName, String xml) {
 		File outFile = new File(realOutFolder, outFileName);
-		try (BufferedWriter writer = new BufferedWriter(new PrintWriter(outFile, cliche.getEncoding()))) {
-			if (!cliche.getXmlVersion().isEmpty())
-				writer.write(
-						"<?xml version=\"" + cliche.getXmlVersion() + "\" encoding=\"" + cliche.getEncoding() + "\"?>");
-			writer.write(xml);
+		try (PrintWriter pw = new PrintWriter(outFile, cliche.getEncoding())) {
+			try (BufferedWriter writer = new BufferedWriter(pw)) {
+				if (!cliche.getXmlVersion().isEmpty())
+					writer.write("<?xml version=\"" + cliche.getXmlVersion() + "\" encoding=\"" + cliche.getEncoding()
+							+ "\"?>");
+				writer.write(xml);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

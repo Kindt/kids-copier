@@ -16,6 +16,7 @@ import ru.kids.copier.ui.ProgressDialog;
 
 public class MainCopier {
 	private static final Logger logger = LogManager.getRootLogger();
+	private static final String MSG_ERROR = "Error!";
 
 	public static void main(String[] args) {
 		logger.info("Start program.");
@@ -48,7 +49,7 @@ public class MainCopier {
 			JOptionPane.showMessageDialog(null,
 					"The input folder was not found!\nFolder created!\nAdd the cliche files and try again!\nPath to the created folder:"
 							+ inFolder.getAbsolutePath(),
-					"Error!", JOptionPane.ERROR_MESSAGE);
+					MSG_ERROR, JOptionPane.ERROR_MESSAGE);
 			logger.error("The input folder was not found!");
 			logger.error("Folder created!");
 			return;
@@ -67,7 +68,7 @@ public class MainCopier {
 			JOptionPane.showMessageDialog(null,
 					"The input folder does not contain \".cliche\" files!\nAdd the cliche files and try again!\nFolder path:"
 							+ inFolder.getAbsolutePath(),
-					"Error!", JOptionPane.ERROR_MESSAGE);
+					MSG_ERROR, JOptionPane.ERROR_MESSAGE);
 			logger.error("The input folder does not contain \".cliche\" files!");
 			logger.error("Add the cliche files and try again!");
 			return;
@@ -82,13 +83,12 @@ public class MainCopier {
 			} catch (IOException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null,
-						"Error clearing the output file folder!\nFolder path:" + outFolder.getAbsolutePath(), "Error!",
+						"Error clearing the output file folder!\nFolder path:" + outFolder.getAbsolutePath(), MSG_ERROR,
 						JOptionPane.ERROR_MESSAGE);
 				logger.error("Error clearing the output file folder!", e);
 				return;
 			}
 
-		boolean isError = false;
 		String[] errorMsg = { "" };
 		try {
 			ProgressDialog pd = new ProgressDialog(null, "Kids copier in progress...");
@@ -109,17 +109,17 @@ public class MainCopier {
 			});
 		} catch (Exception e) {
 			errorMsg[0] = e.getMessage();
-			isError = true;
 		}
 
-		if (!isError || errorMsg[0].isEmpty()) {
+		if (errorMsg[0].isEmpty()) {
 			JOptionPane.showMessageDialog(null, "The job is finished.\nThe finished files are located in the folder: "
 					+ outFolder.getAbsolutePath(), "Message!", JOptionPane.INFORMATION_MESSAGE);
 			logger.info("The job is finished.\n\n\n");
 		} else {
-			JOptionPane.showMessageDialog(null, "Application error:\n" + errorMsg[0], "Error!",
+			JOptionPane.showMessageDialog(null, "Application error:\n" + errorMsg[0], MSG_ERROR,
 					JOptionPane.ERROR_MESSAGE);
-			logger.error(errorMsg[0] + "\n\n\n");
+			logger.error(errorMsg[0]);
+			logger.error("\n\n\n");
 		}
 	}
 }

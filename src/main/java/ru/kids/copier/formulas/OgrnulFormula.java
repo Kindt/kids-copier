@@ -54,13 +54,13 @@ public class OgrnulFormula extends InnFormula {
 	@Override
 	public void init(String formulaArgs) throws InitGeneratorValueException {
 		initFirstChars();
-		String[] args = formulaArgs.split(",");
+		String[] args = formulaArgs.replace("'", "").split(",");
 
 		if (args.length > 3)
 			throw new InitGeneratorValueException("Incorrect number of arguments.");
 
 		if (args.length > 0 && !args[0].trim().isEmpty()) {
-			firstChar = args[0].trim().replace("'", "");
+			firstChar = args[0].trim();
 
 			if (firstChar.length() != 1)
 				throw new InitGeneratorValueException(
@@ -73,15 +73,18 @@ public class OgrnulFormula extends InnFormula {
 		}
 
 		if (args.length > 1) {
-			year = args[1].trim().replace("'", "");
+			year = args[1].trim();
 			if (year.length() != 1 && year.length() != 2)
 				throw new InitGeneratorValueException(
 						"The year is set incorrectly (" + year + "). There should be one or two digits.");
 			isYear = true;
+
+			if (year.length() < 2)
+				year = StringUtils.leftPad(year, 2, '0');
 		}
 
 		if (args.length > 2) {
-			okatoCode = args[2].trim().replace("'", "");
+			okatoCode = args[2].trim();
 			if (!Arrays.asList(ocatoCodes).contains(okatoCode))
 				throw new InitGeneratorValueException("The OKATO code is set incorrectly.");
 			isRegNum = true;

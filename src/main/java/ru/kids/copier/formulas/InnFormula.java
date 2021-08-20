@@ -2,7 +2,6 @@ package ru.kids.copier.formulas;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,8 +11,6 @@ public class InnFormula extends FormulasAbstract {
 
 	private int size = 10;
 	protected String kodNO = "";
-
-	private static final Pattern innPatter = Pattern.compile("\\d{10}||\\d{12}");
 
 	private static final int[] checkArr = new int[] { 3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 };
 	private static final String[] corractFirstParameterValue = new String[] { "ul", "fl", "inul", "" };
@@ -50,6 +47,9 @@ public class InnFormula extends FormulasAbstract {
 			if (args.length > 1) {
 				kodNO = args[1].trim().replace("'", "");
 				isKodNO = true;
+
+				if (kodNO.length() == 2)
+					kodNO += StringUtils.leftPad(rnd.nextInt(100) + "", 2, '0');
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public class InnFormula extends FormulasAbstract {
 	}
 
 	private boolean isValidINN(String inn) {
-		if (!innPatter.matcher(inn).matches()) {
+		if (inn.length() != 10 && inn.length() != 12) {
 			return false;
 		}
 		if (size == 12) {

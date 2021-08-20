@@ -11,7 +11,7 @@ public class RandomsetFormula extends FormulasAbstract {
 
 	@Override
 	public void init(String formulaArgs) throws InitGeneratorValueException {
-		array = formulaArgs.split(",");
+		array = formulaArgs.replace("'", "").split(",");
 		if (array.length < 2)
 			throw new InitGeneratorValueException("Incorrect number of arguments.");
 
@@ -21,6 +21,6 @@ public class RandomsetFormula extends FormulasAbstract {
 	@Override
 	protected String getFormulaValue() {
 		int id = rnd.nextInt(array.length);
-		return array[id].replace("'", "").trim();
+		return array[id].trim();
 	}
 }

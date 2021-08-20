@@ -67,7 +67,7 @@ public class RschetFormula extends FormulasAbstract {
 		for (int i = 0; i < result.length(); i++) {
 			int multiplier = i % 3 == 1 ? 1 : 3;
 			multiplier = i % 3 == 0 ? 7 : multiplier;
-			checkSumm += Integer.parseInt(result.substring(i, i + 1)) * multiplier;
+			checkSumm += Integer.parseInt(result.charAt(i) + "") * multiplier;
 		}
 
 		checkSumm = ((checkSumm % 10) * 3) % 10;
