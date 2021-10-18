@@ -79,19 +79,30 @@ public class Cliche {
 
 	public void prepareXML() {
 		if (!loopTexts.isEmpty()) {
-			for (Entry<String, LoopText> entry : loopTexts.entrySet()) {
-				String keyRegexp = "\\$\\{" + entry.getKey() + "\\}";
-				String key = "${" + entry.getKey() + "}";
-				if (Pattern.compile(keyRegexp).matcher(mainText).find()) {
-					String sourceText = entry.getValue().getText();
-					StringBuilder resultString = new StringBuilder();
-					for (int i = 0; i < entry.getValue().getCopyes(); i++)
-						resultString.append(sourceText);
-					mainText = mainText.replace(key, resultString.toString());
+			while (xmlContainsLoopTexsts()) {
+				for (Entry<String, LoopText> entry : loopTexts.entrySet()) {
+					String keyRegexp = new StringBuilder("\\$\\{").append(entry.getKey()).append("\\}").toString();
+					String key = new StringBuilder("${").append(entry.getKey()).append("}").toString();
+					if (Pattern.compile(keyRegexp).matcher(mainText).find()) {
+						String sourceText = entry.getValue().getText();
+						StringBuilder resultString = new StringBuilder();
+						for (int i = 0; i < entry.getValue().getCopyes(); i++)
+							resultString.append(sourceText);
+						mainText = mainText.replace(key, resultString.toString());
+					}
 				}
 			}
 			loopTexts.clear();
 		}
+	}
+
+	private boolean xmlContainsLoopTexsts() {
+		for (Entry<String, LoopText> entry : loopTexts.entrySet()) {
+			String keyRegexp = new StringBuilder("\\$\\{").append(entry.getKey()).append("\\}").toString();
+			if (Pattern.compile(keyRegexp).matcher(mainText).find())
+				return true;
+		}
+		return false;
 	}
 
 	private class LoopText {

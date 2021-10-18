@@ -148,7 +148,10 @@ public class FilesProcess {
 				if (ch == '$' || !keyName.toString().isEmpty()) {
 					keyName.append(ch);
 				} else
-					result.append(ch);
+					if(ch == '\n')
+						result.append("%n");
+					else
+						result.append(ch);
 			}
 		}
 		return result.toString();
@@ -161,7 +164,7 @@ public class FilesProcess {
 				if (!cliche.getXmlVersion().isEmpty())
 					writer.write("<?xml version=\"" + cliche.getXmlVersion() + "\" encoding=\"" + cliche.getEncoding()
 							+ "\"?>");
-				writer.write(xml);
+				writer.write(String.format(xml));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -203,7 +206,7 @@ public class FilesProcess {
 				fomulaClass = new StringConstantFormula();
 
 			fomulaClass.init(formula, arguments, isLoop, isUnique);
-			result.put("${" + key + "}", fomulaClass);
+			result.put(new StringBuilder("${").append(key).append("}").toString(), fomulaClass);
 			pd.setSecondBarIncValue();
 		}
 		return result;

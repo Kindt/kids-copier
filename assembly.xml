@@ -9,36 +9,36 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>src/source/bats</directory>
-			<outputDirectory>kid-copier</outputDirectory>
+			<directory>${project.build.directory}/archive-tmp/.model/bin</directory>
+			<outputDirectory>${project.artifactId}</outputDirectory>
 			<includes>				
 				<include>**</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}/archive-tmp/.model/lib</directory>
-			<outputDirectory>kid-copier/lib</outputDirectory>
+			<outputDirectory>${project.artifactId}/lib</outputDirectory>
 			<includes>				
 				<include>**</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>src/source/in</directory>
-			<outputDirectory>kid-copier/in</outputDirectory>
+			<outputDirectory>${project.artifactId}/in</outputDirectory>
 			<includes>				
 				<include>**</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>src/source/in</directory>
-			<outputDirectory>kid-copier/example</outputDirectory>
+			<outputDirectory>${project.artifactId}/example</outputDirectory>
 			<includes>				
 				<include>**</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>src/source/qrefs</directory>
-			<outputDirectory>kid-copier/qrefs</outputDirectory>
+			<outputDirectory>${project.artifactId}/qrefs</outputDirectory>
 			<includes>				
 				<include>**</include>
 			</includes>
@@ -47,7 +47,7 @@
 	<files>
 		<file>
 			<source>README.md</source>
-			<destName>kid-copier/readme.txt</destName>
+			<destName>${project.artifactId}/readme.txt</destName>
 		</file>
 	</files>
 </assembly>

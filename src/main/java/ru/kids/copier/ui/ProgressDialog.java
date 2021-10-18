@@ -30,7 +30,7 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 	private JLabel secondLabel;
 	private JProgressBar secondBar;
 
-	private SwingWorker<?, ?> worker;
+	private transient SwingWorker<?, ?> worker;
 
 	public ProgressDialog(JDialog parent, String title) {
 		super(parent, title, false);
@@ -43,14 +43,14 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 		getContentPane().setLayout(gridBagLayout);
 
 		JPanel firstPanel = new JPanel();
-		GridBagConstraints gbc_firstPanel = new GridBagConstraints();
-		gbc_firstPanel.weightx = 1.0;
-		gbc_firstPanel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_firstPanel.anchor = GridBagConstraints.NORTH;
-		gbc_firstPanel.insets = new Insets(0, 0, 5, 0);
-		gbc_firstPanel.gridx = 0;
-		gbc_firstPanel.gridy = 0;
-		getContentPane().add(firstPanel, gbc_firstPanel);
+		GridBagConstraints gbcFirstPanel = new GridBagConstraints();
+		gbcFirstPanel.weightx = 1.0;
+		gbcFirstPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbcFirstPanel.anchor = GridBagConstraints.NORTH;
+		gbcFirstPanel.insets = new Insets(0, 0, 5, 0);
+		gbcFirstPanel.gridx = 0;
+		gbcFirstPanel.gridy = 0;
+		getContentPane().add(firstPanel, gbcFirstPanel);
 		firstPanel.setLayout(new BorderLayout(0, 0));
 		firstLabel = new JLabel();
 		firstPanel.add(firstLabel, BorderLayout.NORTH);
@@ -60,14 +60,14 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 		firstBar.setStringPainted(true);
 
 		JPanel secondPanel = new JPanel();
-		GridBagConstraints gbc_secondPanel = new GridBagConstraints();
-		gbc_secondPanel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_secondPanel.weightx = 1.0;
-		gbc_secondPanel.weighty = 1.0;
-		gbc_secondPanel.anchor = GridBagConstraints.CENTER;
-		gbc_secondPanel.gridx = 0;
-		gbc_secondPanel.gridy = 1;
-		getContentPane().add(secondPanel, gbc_secondPanel);
+		GridBagConstraints gbcSecondPanel = new GridBagConstraints();
+		gbcSecondPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbcSecondPanel.weightx = 1.0;
+		gbcSecondPanel.weighty = 1.0;
+		gbcSecondPanel.anchor = GridBagConstraints.CENTER;
+		gbcSecondPanel.gridx = 0;
+		gbcSecondPanel.gridy = 1;
+		getContentPane().add(secondPanel, gbcSecondPanel);
 		secondPanel.setLayout(new BorderLayout(0, 0));
 
 		secondLabel = new JLabel();
@@ -124,17 +124,20 @@ public class ProgressDialog extends JDialog implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if ("state".equals(evt.getPropertyName()))
+		if ("state".equals(evt.getPropertyName())) {
 			if (SwingWorker.StateValue.STARTED.equals(evt.getNewValue())
 					|| SwingWorker.StateValue.PENDING.equals(evt.getNewValue())) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			} else if (SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
-				setCursor(Cursor.getDefaultCursor());
-				worker.removePropertyChangeListener(this);
-				worker.cancel(false);
-				setVisible(false);
-				dispose();
+			} else {
+				if (SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+					setCursor(Cursor.getDefaultCursor());
+					worker.removePropertyChangeListener(this);
+					worker.cancel(false);
+					setVisible(false);
+					dispose();
+				}
 			}
+		}
 	}
 
 	public boolean isCanseled() {
