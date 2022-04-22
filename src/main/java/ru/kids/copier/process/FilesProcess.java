@@ -118,8 +118,6 @@ public class FilesProcess {
 							writer);
 				}
 
-				// createOutFile(cliche, realOutFolder, outFileNameNewStr, resultText);
-
 				logger.info("Creating file {}", outFileNameNewStr);
 				pd.setSecondBarIncValue();
 				notLoopValues.clear();
@@ -185,7 +183,7 @@ public class FilesProcess {
 					result.append(ch);
 			}
 		}
-		if (writer != null && !result.isEmpty()) {
+		if (writer != null && result.length() > 0) {
 			writer.write(result.toString());
 			result.setLength(0);
 		}
