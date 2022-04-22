@@ -2,8 +2,6 @@ package ru.kids.copier.process;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 public class Cliche {
 	private Map<String, Map<String, FormulaPropertis>> calcFormulas = new HashMap<>();
@@ -60,6 +58,10 @@ public class Cliche {
 	public void putLoopTexts(String name, String text, int copyes) {
 		this.loopTexts.put(name, new LoopText(copyes, text));
 	}
+	
+	public Map<String, LoopText> getLoopTexts() {
+		return loopTexts;
+	}
 
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
@@ -75,69 +77,5 @@ public class Cliche {
 
 	public String getXmlVersion() {
 		return xmlVersion;
-	}
-
-	public void prepareXML() {
-		if (!loopTexts.isEmpty()) {
-			while (xmlContainsLoopTexsts()) {
-				for (Entry<String, LoopText> entry : loopTexts.entrySet()) {
-					String keyRegexp = new StringBuilder("\\$\\{").append(entry.getKey()).append("\\}").toString();
-					String key = new StringBuilder("${").append(entry.getKey()).append("}").toString();
-					if (Pattern.compile(keyRegexp).matcher(mainText).find()) {
-						String sourceText = entry.getValue().getText();
-						StringBuilder resultString = new StringBuilder();
-						for (int i = 0; i < entry.getValue().getCopyes(); i++)
-							resultString.append(sourceText);
-						mainText = mainText.replace(key, resultString.toString());
-					}
-				}
-			}
-			loopTexts.clear();
-		}
-	}
-
-	private boolean xmlContainsLoopTexsts() {
-		for (Entry<String, LoopText> entry : loopTexts.entrySet()) {
-			String keyRegexp = new StringBuilder("\\$\\{").append(entry.getKey()).append("\\}").toString();
-			if (Pattern.compile(keyRegexp).matcher(mainText).find())
-				return true;
-		}
-		return false;
-	}
-
-	private class LoopText {
-		private int copyes = 10;
-		private String text = "";
-
-		public LoopText(int copyes, String text) {
-			this.copyes = copyes;
-			this.text = text;
-		}
-
-		public int getCopyes() {
-			return copyes;
-		}
-
-		public String getText() {
-			return text;
-		}
-	}
-
-	public class FormulaPropertis {
-		private boolean isLoop = false;
-		private boolean isUnique = false;
-
-		public FormulaPropertis(boolean isLoop, boolean isUnique) {
-			this.isLoop = isLoop;
-			this.isUnique = isUnique;
-		}
-
-		public boolean isLoop() {
-			return isLoop;
-		}
-
-		public boolean isUnique() {
-			return isUnique;
-		}
 	}
 }

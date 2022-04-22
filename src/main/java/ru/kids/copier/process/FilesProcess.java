@@ -27,7 +27,6 @@ import ru.kids.copier.exceptions.GenerateValueException;
 import ru.kids.copier.exceptions.InitGeneratorValueException;
 import ru.kids.copier.formulas.FormulasAbstract;
 import ru.kids.copier.formulas.StringConstantFormula;
-import ru.kids.copier.process.Cliche.FormulaPropertis;
 import ru.kids.copier.ui.ProgressDialog;
 import ru.kids.copier.xml.ClicheParser;
 
@@ -103,20 +102,36 @@ public class FilesProcess {
 		if (!realOutFolder.exists())
 			realOutFolder.mkdirs();
 
-		for (int i = 0; i < cliche.getAmountCopyes(); i++) {
-			String resultText = processInsertsValues(xml, formulasValues, !cliche.getXmlVersion().isEmpty());
-			String outFileNameNewStr = processInsertsValues(outFileName, formulasValues, false);
+		try {
+			for (int i = 0; i < cliche.getAmountCopyes(); i++) {
+				// String resultText =
+				String outFileNameNewStr = processInsertsValues(outFileName, formulasValues, cliche.getLoopTexts(),
+						false, null);
 
-			createOutFile(cliche, realOutFolder, outFileNameNewStr, resultText);
+				File outFile = new File(realOutFolder, outFileNameNewStr);
+				try (PrintWriter pw = new PrintWriter(outFile, cliche.getEncoding());
+						BufferedWriter writer = new BufferedWriter(pw)) {
+					if (!cliche.getXmlVersion().isEmpty())
+						writer.write("<?xml version=\"" + cliche.getXmlVersion() + "\" encoding=\""
+								+ cliche.getEncoding() + "\"?>");
+					processInsertsValues(xml, formulasValues, cliche.getLoopTexts(), !cliche.getXmlVersion().isEmpty(),
+							writer);
+				}
 
-			logger.info("Creating file {}", outFileNameNewStr);
-			pd.setSecondBarIncValue();
-			notLoopValues.clear();
+				// createOutFile(cliche, realOutFolder, outFileNameNewStr, resultText);
+
+				logger.info("Creating file {}", outFileNameNewStr);
+				pd.setSecondBarIncValue();
+				notLoopValues.clear();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private String processInsertsValues(char[] chars, Map<String, FormulasAbstract> formulasValues, boolean isXML)
-			throws CanselException, GenerateValueException {
+	private String processInsertsValues(char[] chars, Map<String, FormulasAbstract> formulasValues,
+			Map<String, LoopText> loopTexts, boolean isXML, BufferedWriter writer)
+			throws CanselException, GenerateValueException, IOException {
 		StringBuilder result = new StringBuilder();
 		StringBuilder keyName = new StringBuilder();
 
@@ -137,40 +152,47 @@ public class FilesProcess {
 						if (!formula.isLoop())
 							notLoopValues.put(key, value);
 					}
+
+					if (isXML)
+						value = StringEscapeUtils.escapeXml10(value);
+
+					result.append(value);
+				} else {
+					if (loopTexts.containsKey(key)) {
+						LoopText loopText = loopTexts.get(key);
+						for (int i = 0; i < loopText.getCopyes(); i++)
+							processInsertsValues(loopText.getText().toCharArray(), formulasValues, loopTexts, isXML,
+									writer);
+						result.setLength(0);
+					} else {
+						if (isXML)
+							value = StringEscapeUtils.escapeXml10(value);
+
+						result.append(value);
+					}
 				}
-
-				if (isXML)
-					value = StringEscapeUtils.escapeXml10(value);
-
-				result.append(value);
 				keyName.setLength(0);
 			} else {
 				if (ch == '$' || !keyName.toString().isEmpty()) {
 					keyName.append(ch);
+				} else if (ch == '\n') {
+					if (writer != null) {
+						writer.newLine();
+						writer.write(result.toString());
+						result.setLength(0);
+					}
 				} else
-					if(ch == '\n')
-						result.append("%n");
-					else
-						result.append(ch);
+					result.append(ch);
 			}
+		}
+		if (writer != null && !result.isEmpty()) {
+			writer.write(result.toString());
+			result.setLength(0);
 		}
 		return result.toString();
 	}
 
-	private void createOutFile(Cliche cliche, File realOutFolder, String outFileName, String xml) {
-		File outFile = new File(realOutFolder, outFileName);
-		try (PrintWriter pw = new PrintWriter(outFile, cliche.getEncoding())) {
-			try (BufferedWriter writer = new BufferedWriter(pw)) {
-				if (!cliche.getXmlVersion().isEmpty())
-					writer.write("<?xml version=\"" + cliche.getXmlVersion() + "\" encoding=\"" + cliche.getEncoding()
-							+ "\"?>");
-				writer.write(String.format(xml));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+	@SuppressWarnings("deprecation")
 	private Map<String, FormulasAbstract> initFormulas(Map<String, Map<String, FormulaPropertis>> calcFormulas)
 			throws ActivateException, InitGeneratorValueException {
 		Map<String, FormulasAbstract> result = new HashMap<>(calcFormulas.size());

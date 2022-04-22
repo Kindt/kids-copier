@@ -10,13 +10,16 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import ru.kids.copier.process.Cliche;
 
 public class ClicheParser {
+
+	private ClicheParser() {
+
+	}
 
 	public static Cliche parse(File file) {
 		Cliche cliche = new Cliche();
@@ -30,66 +33,7 @@ public class ClicheParser {
 						XMLEvent xmlEvent = reader.nextEvent();
 						if (xmlEvent.isStartElement()) {
 							StartElement startElement = xmlEvent.asStartElement();
-							String startElementName = startElement.getName().getLocalPart();
-							switch (startElementName) {
-							case ("formula"):
-								Attribute nameAttr = startElement.getAttributeByName(new QName("name"));
-								Attribute formulaAttr = startElement.getAttributeByName(new QName("formula"));
-								Attribute isLoopAttr = startElement.getAttributeByName(new QName("isLoop"));
-								Attribute isUniqueAttr = startElement.getAttributeByName(new QName("isUnique"));
-								if (nameAttr != null && formulaAttr != null) {
-									boolean isLoop = isLoopAttr == null ? false
-											: Boolean.parseBoolean(isLoopAttr.getValue());
-									boolean isUnique = isUniqueAttr == null ? false
-											: Boolean.parseBoolean(isUniqueAttr.getValue());
-									cliche.putCalcFormulas(nameAttr.getValue(), formulaAttr.getValue(), isLoop,
-											isUnique);
-								}
-								break;
-							case ("loopText"):
-								nameAttr = startElement.getAttributeByName(new QName("name"));
-								Attribute amountCopyesAttr = startElement.getAttributeByName(new QName("amountCopyes"));
-								if (nameAttr != null && amountCopyesAttr != null) {
-									xmlEvent = reader.nextEvent();
-									while (!xmlEvent.isCharacters())
-										xmlEvent = reader.nextEvent();
-									cliche.putLoopTexts(nameAttr.getValue(), xmlEvent.asCharacters().getData(),
-											Integer.parseInt(amountCopyesAttr.getValue()));
-								}
-								break;
-							case ("amountCopyes"):
-								xmlEvent = reader.nextEvent();
-								cliche.setAmountCopyes(Integer.parseInt(xmlEvent.asCharacters().getData()));
-								break;
-							case ("fileNameMask"):
-								xmlEvent = reader.nextEvent();
-								cliche.setFileNameMask(xmlEvent.asCharacters().getData());
-								break;
-							case ("toSubFolder"):
-								xmlEvent = reader.nextEvent();
-								cliche.setToSubFolder(Boolean.parseBoolean(xmlEvent.asCharacters().getData()));
-								break;
-							case ("encoding"):
-								xmlEvent = reader.nextEvent();
-								cliche.setEncoding(xmlEvent.asCharacters().getData());
-								break;
-							case ("xmlVersion"):
-								xmlEvent = reader.nextEvent();
-								cliche.setXmlVersion(xmlEvent.asCharacters().getData());
-								break;
-							case ("mainText"):
-								xmlEvent = reader.nextEvent();
-								while (!xmlEvent.isCharacters())
-									xmlEvent = reader.nextEvent();
-								cliche.setMainText(xmlEvent.asCharacters().getData());
-								break;
-							}
-						}
-						if (xmlEvent.isEndElement()) {
-							EndElement endElement = xmlEvent.asEndElement();
-							String endElementName = endElement.getName().getLocalPart();
-							if (endElementName.equals("cliche"))
-								cliche.prepareXML();
+							processElement(startElement, cliche, reader);
 						}
 					}
 				} finally {
@@ -101,5 +45,67 @@ public class ClicheParser {
 			exc.printStackTrace();
 		}
 		return cliche;
+	}
+
+	private static void processElement(StartElement startElement, Cliche cliche,
+			XMLEventReader reader) throws XMLStreamException {
+		String startElementName = startElement.getName().getLocalPart();
+		XMLEvent xmlEvent = null;
+		switch (startElementName) {
+		case ("formula"):
+			Attribute nameAttr = startElement.getAttributeByName(new QName("name"));
+			Attribute formulaAttr = startElement.getAttributeByName(new QName("formula"));
+			Attribute isLoopAttr = startElement.getAttributeByName(new QName("isLoop"));
+			Attribute isUniqueAttr = startElement.getAttributeByName(new QName("isUnique"));
+			if (nameAttr != null && formulaAttr != null) {
+				boolean isLoop = getBooleanValue(isLoopAttr);
+				boolean isUnique = getBooleanValue(isUniqueAttr);
+				cliche.putCalcFormulas(nameAttr.getValue(), formulaAttr.getValue(), isLoop, isUnique);
+			}
+			break;
+		case ("loopText"):
+			nameAttr = startElement.getAttributeByName(new QName("name"));
+			Attribute amountCopyesAttr = startElement.getAttributeByName(new QName("amountCopyes"));
+			if (nameAttr != null && amountCopyesAttr != null) {
+				xmlEvent = reader.nextEvent();
+				while (!xmlEvent.isCharacters())
+					xmlEvent = reader.nextEvent();
+				cliche.putLoopTexts(new StringBuilder("${").append(nameAttr.getValue()).append("}").toString(), xmlEvent.asCharacters().getData(),
+						Integer.parseInt(amountCopyesAttr.getValue()));
+			}
+			break;
+		case ("amountCopyes"):
+			xmlEvent = reader.nextEvent();
+			cliche.setAmountCopyes(Integer.parseInt(xmlEvent.asCharacters().getData()));
+			break;
+		case ("fileNameMask"):
+			xmlEvent = reader.nextEvent();
+			cliche.setFileNameMask(xmlEvent.asCharacters().getData());
+			break;
+		case ("toSubFolder"):
+			xmlEvent = reader.nextEvent();
+			cliche.setToSubFolder(Boolean.parseBoolean(xmlEvent.asCharacters().getData()));
+			break;
+		case ("encoding"):
+			xmlEvent = reader.nextEvent();
+			cliche.setEncoding(xmlEvent.asCharacters().getData());
+			break;
+		case ("xmlVersion"):
+			xmlEvent = reader.nextEvent();
+			cliche.setXmlVersion(xmlEvent.asCharacters().getData());
+			break;
+		case ("mainText"):
+			xmlEvent = reader.nextEvent();
+			while (!xmlEvent.isCharacters())
+				xmlEvent = reader.nextEvent();
+			cliche.setMainText(xmlEvent.asCharacters().getData());
+			break;
+		default:
+			break;
+		}
+	}
+
+	private static boolean getBooleanValue(Attribute val) {
+		return val == null ? Boolean.FALSE : Boolean.parseBoolean(val.getValue());
 	}
 }
