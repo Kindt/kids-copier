@@ -11,7 +11,7 @@ import ru.kids.copier.exceptions.InitGeneratorValueException;
 public class RschetFormula extends FormulasAbstract {
 
 	private static final Random rnd = new Random();
-	private int nomPor = 1;
+	private long nomPor = 1;
 	private static final String[] kodVals = new String[] { "008", "012", "032", "036", "044", "048", "050", "051",
 			"052", "060", "064", "068", "072", "084", "090", "096", "104", "108", "116", "124", "132", "136", "144",
 			"152", "156", "170", "174", "188", "191", "192", "203", "208", "214", "222", "230", "232", "238", "242",

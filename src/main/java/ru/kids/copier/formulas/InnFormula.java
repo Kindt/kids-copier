@@ -9,10 +9,10 @@ import ru.kids.copier.exceptions.InitGeneratorValueException;
 
 public class InnFormula extends FormulasAbstract {
 
-	private int size = 10;
+	private byte size = 10;
 	protected String kodNO = "";
 
-	private static final int[] checkArr = new int[] { 3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 };
+	private static final byte[] checkArr = new byte[] { 3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 };
 	private static final String[] corractFirstParameterValue = new String[] { "ul", "fl", "inul", "" };
 
 	protected static final String[] ocatoCodes = new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09",
@@ -98,11 +98,11 @@ public class InnFormula extends FormulasAbstract {
 		return getSumm(inn, offset, arrOffset) == inn.charAt(inn.length() - offset) - '0';
 	}
 
-	private int getSumm(String inn, int offset, int arrOffset) {
-		int sum = 0;
-		for (int i = 0; i < size - offset; i++) {
+	private byte getSumm(String inn, int offset, int arrOffset) {
+		byte sum = 0;
+		for (byte i = 0; i < size - offset; i++) {
 			sum += (inn.charAt(i) - '0') * checkArr[i + arrOffset];
 		}
-		return (sum % 11) % 10;
+		return (byte) ((sum % 11) % 10);
 	}
 }

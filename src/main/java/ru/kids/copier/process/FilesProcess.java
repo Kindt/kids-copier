@@ -104,7 +104,6 @@ public class FilesProcess {
 
 		try {
 			for (int i = 0; i < cliche.getAmountCopyes(); i++) {
-				// String resultText =
 				String outFileNameNewStr = processInsertsValues(outFileName, formulasValues, cliche.getLoopTexts(),
 						false, null);
 
@@ -158,7 +157,7 @@ public class FilesProcess {
 				} else {
 					if (loopTexts.containsKey(key)) {
 						LoopText loopText = loopTexts.get(key);
-						for (int i = 0; i < loopText.getCopyes(); i++)
+						for (long i = 0; i < loopText.getCopyes(); i++)
 							processInsertsValues(loopText.getText().toCharArray(), formulasValues, loopTexts, isXML,
 									writer);
 						result.setLength(0);
@@ -208,7 +207,7 @@ public class FilesProcess {
 			String arguments = formula;
 			if (formula.contains("(")) {
 				String formulaName = formula.substring(0, formula.indexOf("(")).toLowerCase();
-				String className = "ru.kids.copier.formulas." + StringUtils.capitalize(formulaName) + "Formula";
+				String className = new StringBuilder("ru.kids.copier.formulas.").append(StringUtils.capitalize(formulaName)).append("Formula").toString();
 				try {
 					Class<?> classW = getClass().getClassLoader().loadClass(className);
 					fomulaClass = (FormulasAbstract) classW.newInstance();

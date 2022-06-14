@@ -71,7 +71,7 @@ public class ClicheParser {
 				while (!xmlEvent.isCharacters())
 					xmlEvent = reader.nextEvent();
 				cliche.putLoopTexts(new StringBuilder("${").append(nameAttr.getValue()).append("}").toString(), xmlEvent.asCharacters().getData(),
-						Integer.parseInt(amountCopyesAttr.getValue()));
+						Long.parseLong(amountCopyesAttr.getValue()));
 			}
 			break;
 		case ("amountCopyes"):

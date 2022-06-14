@@ -6,6 +6,10 @@ public class InitGeneratorValueException extends Exception {
 		super(string);
 	}
 
+	public InitGeneratorValueException(InitGeneratorValueException e) {
+		super(e);
+	}
+
 	/**
 	 *
 	 */

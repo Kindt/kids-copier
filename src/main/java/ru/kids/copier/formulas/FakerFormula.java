@@ -128,7 +128,7 @@ public class FakerFormula extends FormulasAbstract {
 		return null;
 	}
 
-	private Object getTypeValue(String arg) throws NoSuchFieldException, ClassNotFoundException {
+	private Object getTypeValue(String arg) throws ClassNotFoundException {
 
 		Class<?> findClass = getClass().getClassLoader().loadClass(arg.substring(0, arg.lastIndexOf('.')));
 

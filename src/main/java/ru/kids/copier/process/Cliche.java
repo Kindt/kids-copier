@@ -55,7 +55,7 @@ public class Cliche {
 		this.toSubFolder = toSubFolder;
 	}
 
-	public void putLoopTexts(String name, String text, int copyes) {
+	public void putLoopTexts(String name, String text, Long copyes) {
 		this.loopTexts.put(name, new LoopText(copyes, text));
 	}
 	

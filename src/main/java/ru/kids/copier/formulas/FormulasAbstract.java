@@ -12,7 +12,7 @@ public abstract class FormulasAbstract {
 	protected String value;
 	protected boolean isLoop = false;
 	protected boolean isUnique = false;
-	protected int maxFindUniqueValue = 10000;
+	protected long maxFindUniqueValue = 10000;
 	protected String formulaAll;
 
 	protected Set<String> values = new HashSet<>();

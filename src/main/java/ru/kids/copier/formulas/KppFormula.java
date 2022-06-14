@@ -8,7 +8,7 @@ import ru.kids.copier.exceptions.InitGeneratorValueException;
 
 public class KppFormula extends InnFormula {
 
-	private int sdvig = 0;
+	private byte sdvig = 0;
 	private static final String[] corractFirstParameterValue = new String[] { "ul", "inul", "" };
 
 	private boolean isKodNO = false;
